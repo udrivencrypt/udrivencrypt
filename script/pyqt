@@ -1,0 +1,9 @@
+#!/bin/bash
+
+if [-f /etc/os-release]; then
+	. /etc/os-release
+	OS=$NAME
+	if[$OS == "Fedora"];then
+		dnf install python3-PyQt5
+
+fi 

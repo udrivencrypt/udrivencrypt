@@ -14,10 +14,19 @@ setup(name='udrive-encrypt',
       long_description=open("README.md").read(),
       author='Gajanan Akshata Amruta Anuja ',
       author_email='akshatajadhav17@gmail.com',
+      license='GNU General Public License V3.0'
       url='https://github.com/udrive-encrypt/drive-encryption',
       zip_safe=False,
       install_requires=["pyqt5"],
       classifiers=['Programming Language :: Python'],
+      entry_points={
+	'gui_scripts':[
+		'encryption=gui.main:main'
+	
+	]
+	
+
+	},
 	
 
 )

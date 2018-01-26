@@ -41,7 +41,7 @@ def Add(self):
 	self.Atextbox1.setMaxLength(10)
 
 	self.Abtn1=QPushButton("Finish",self)
-		#self.btn1.clicked.connect(self.Finish)
+	#self.btn1.clicked.connect(self.Finish)
 		
 
 	vbox = QVBoxLayout()
@@ -60,15 +60,4 @@ def Add(self):
 	
 
 
-def Atoggle(self):
-		
-		
-		
-	if self.Acheck.isChecked()==True:
-		self.AgroupBox.setVisible(True)
-		self.Echeck.setChecked(False)
-		self.Dcheck.setChecked(False)
-	else:
-			
-		self.AgroupBox.setVisible(False)
-			
+

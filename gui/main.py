@@ -2,6 +2,7 @@ from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import (QApplication, QCheckBox, QGridLayout, QGroupBox,QComboBox,QLabel,QLineEdit,QMessageBox,QProgressBar,
         QMenu, QPushButton, QRadioButton, QVBoxLayout,QHBoxLayout, QWidget,QBoxLayout)
 import os
+import sys
 from encrypt import Encrypt
 from add import Add
 from delete import Delete
@@ -55,7 +56,54 @@ class Window(QWidget):
 		return devicename
 
 	
+
+	
+	def Entoggle(self):
+		
+		
+		if self.Echeck.isChecked()==True:
+			self.EgroupBox.setVisible(True)
+			self.Acheck.setChecked(False)
+			self.Dcheck.setChecked(False) 			
 			
+			
+
+		else:
+			self.EgroupBox.setVisible(False)
+
+
+
+
+
+	def Atoggle(self):
+		
+		
+		
+		if self.Acheck.isChecked()==True:
+			self.AgroupBox.setVisible(True)
+			self.Echeck.setChecked(False)
+			self.Dcheck.setChecked(False)
+		else:
+			
+			self.AgroupBox.setVisible(False)
+			
+
+
+	
+
+	
+	def Dtoggle(self):
+		
+		
+		
+		if self.Dcheck.isChecked()==True:
+			self.DgroupBox.setVisible(True)
+			self.Echeck.setChecked(False)
+			self.Acheck.setChecked(False)
+		else:
+			
+			
+			self.DgroupBox.setVisible(False)
 
 		
 
@@ -158,19 +206,22 @@ class Window(QWidget):
 
 	def Finish(self):
 
-		#if self.textbox.text()==self.textbox1.text():
-		#	os.system()
-
-
 		choice=QMessageBox.information(self,'Message',"Drive is encrypted.Click 'No' to end .Click 'Yes'to add new key",QMessageBox.Yes|QMessageBox.No,QMessageBox.No)
 		if choice==QMessageBox.Yes:
 			self.AgroupBox.setChecked(True)
 		else:	
-			sys.exit()	
+			sys.exit()
+
+
+	
 		
 			
 
-
+def main():
+    app = QApplication(sys.argv)
+    window = Window()
+    window.show()
+    sys.exit(app.exec_())
 
 
 
@@ -178,10 +229,4 @@ class Window(QWidget):
 
 if __name__ == '__main__':
 
-    import sys
-
-    app = QApplication(sys.argv)
-    window = Window()
-    window.show()
-
-sys.exit(app.exec_())
+	main()

@@ -69,15 +69,3 @@ def Encrypt(self):
 
 
 
-def Entoggle(self):
-		
-		
-	if self.Echeck.isChecked()==True:
-		self.EgroupBox.setVisible(True)
-		self.Acheck.setChecked(False)
-		self.Dcheck.setChecked(False) 			
-			
-			
-
-	else:
-		self.EgroupBox.setVisible(False)

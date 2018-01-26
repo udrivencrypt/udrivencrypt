@@ -58,17 +58,5 @@ def Delete(self):
 
 
 
-def Dtoggle(self):
-		
-		
-		
-	if self.Dcheck.isChecked()==True:
-		self.DgroupBox.setVisible(True)
-		self.Echeck.setChecked(False)
-		self.Acheck.setChecked(False)
-	else:
-			
-			
-		self.DgroupBox.setVisible(False)
 
 

@@ -21,7 +21,7 @@ setup(name='udrive-encrypt',
       classifiers=['Programming Language :: Python'],
       entry_points={
 	'gui_scripts':[
-		'udrive-encrypt=gui.main:main'
+		'drive-encryption=gui.main:main'
 	
 	]
 	

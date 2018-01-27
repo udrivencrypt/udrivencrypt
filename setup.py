@@ -3,32 +3,30 @@ import sys
 if sys.version_info[0]<3:
 	sys.exit('Sorry ,Python < 3 is not supported')
 
-from setuptools import setup
+from setuptools import setup,find_packages()
 
-packages=["gui"]
+
 
 setup(name='udrive-encrypt',
-      packages=packages,
+      packages=find_packages,
       version='1.0',
-      description="PyQt5 GUI to encrypt USB drive",
+      description="GUI to encrypt USB drive using PyQt5",
       long_description=open("README.md").read(),
-      author='Gajanan akshata Amruta Anuja ',
+      author='Gajanan Akshata Amruta Anuja ',
       author_email='akshatajadhav17@gmail.com',
-      #url='',
+      license='GNU General Public License V3.0'
+      url='https://github.com/udrive-encrypt/drive-encryption',
       zip_safe=False,
       install_requires=["pyqt5"],
       classifiers=['Programming Language :: Python'],
-#      entry_points={
-#	'console-scripts':[
-#		'gui=gui.final:main'
-#		]
+      entry_points={
+	'gui_scripts':[
+		'encryption=gui.main:main'
+	
+	]
+	
 
-
-#	}
-
-      scripts=[
-	'script/pyqt',
-
-	],
+	},
+	
 
 )

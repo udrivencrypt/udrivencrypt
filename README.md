@@ -1,11 +1,9 @@
 # GUI to encrypt USB drive
 An easy-to-use gui for encryption of USB drives using Python (PyQt5) for GUI and LUKS for encryption. Users will be provided a list of connected USB drives and will have to select the one to be encrypted. Further they will have to add password. In case, the drive is already encrypted, users will be able to add new passwords (max 8) or delete passwords.
-<pre>
-</pre>
+
 **Prerequisites** <hr/>
-  Any system having Linux based operating system can use this application.<br>
-<pre>
-</pre>
+  Any system having Linux based operating system can use this application.
+
 **Installing**<hr/>
   Installing PyQt5
 	 <ol> <li>pip3 install PyQt5
@@ -22,13 +20,12 @@ An easy-to-use gui for encryption of USB drives using Python (PyQt5) for GUI and
 **Built With** <hr/>
   PyQt5 - Python binding of the cross-platform GUI toolkit Qt. It is implemented as a Python plug-in. <br>
   PyCharm - Integrated Development Environment, specially used for Python.
-<pre>
-</pre>
-**Authors**<hr/>
+
+**Authors** <hr/>
 <ul><li>  Akshata Jadhav
 <li>  Gajanan More
   <li>Anuja Kulkarni
   <li>Amruta Salunkhe</ul>
   
 **License**<hr/>
-  This project is licensed under the GNU General Public License - see the [License] (https://github.com/udrivencrypt/udrivencrypt/blob/master/LICENSE) file for details.
+  This project is licensed under the GNU General Public License - see the <a href="https://github.com/udrivencrypt/udrivencrypt/blob/master/LICENSE"> License </a> file for details.

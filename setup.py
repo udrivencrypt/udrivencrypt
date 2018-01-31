@@ -7,7 +7,7 @@ from setuptools import setup,find_packages
 
 
 
-setup(name='udrive-encrypt',
+setup(name='udrivencrypt',
       packages=find_packages,
       version='1.0',
       description="GUI to encrypt USB drive using PyQt5",
@@ -21,7 +21,7 @@ setup(name='udrive-encrypt',
       classifiers=['Programming Language :: Python'],
       entry_points={
 	'gui_scripts':[
-		'drive-encryption=gui.main:main'
+		'udrivencrypt=gui.main:main'
 	
 	]
 	

@@ -10,16 +10,16 @@ An easy-to-use gui for encryption of USB drives using Python (PyQt5) for GUI and
 
 **Installing**<hr/>
   Installing PyQt5
-	 <ol> <li>pip3 install PyQt5
+	 <ol> <li>`pip3 install PyQt5`
 	      <li>If the above command does not run successfully, you can make a directory and create virtual environment.
-			<ul>	<li>mkdir demo
-		       		<li> cd demo	
-				<li> python -m venv v1
-       				<li> source v1/bin/activate
-       				<li>pip3 install PyQt5	
+			<ul>	<li>`mkdir demo`
+		       		<li> `cd demo`	
+				<li> `python -m venv v1`
+       				<li> `source v1/bin/activate`
+       				<li>`pip3 install PyQt5`	
 			</ul>
 		<li>Or you can clone the repo and run following command.
-	<ul><li>pip install -r requirement.txt<ul></ol>
+	<ul><li>`pip install -r requirement.txt`<ul></ol>
 </br>
 </br>
 

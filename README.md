@@ -22,7 +22,6 @@ An easy-to-use gui for encryption of USB drives using Python (PyQt5) for GUI and
 	<ul><li>`pip install -r requirement.txt`<ul></ol>
 </br>
 </br>
-
 **Built With** <hr/>
   PyQt5 - Python binding of the cross-platform GUI toolkit Qt. It is implemented as a Python plug-in. <br>
   PyCharm - Integrated Development Environment, specially used for Python.

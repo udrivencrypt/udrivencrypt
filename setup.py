@@ -8,14 +8,14 @@ from setuptools import setup,find_packages
 
 
 setup(name='udrivencrypt',
-      packages=find_packages,
+      packages=find_packages(),
       version='1.0',
       description="GUI to encrypt USB drive using PyQt5",
       long_description=open("README.md").read(),
       author='Gajanan Akshata Amruta Anuja ',
       author_email='akshatajadhav17@gmail.com',
       license='GNU General Public License V3.0',
-      url='https://github.com/udrive-encrypt/drive-encryption',
+      url='https://github.com/udrivencrypt/udrivencrypt',
       zip_safe=False,
       install_requires=["pyqt5"],
       classifiers=['Programming Language :: Python'],

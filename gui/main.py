@@ -3,6 +3,8 @@ from PyQt5.QtWidgets import (QLabel,  QHBoxLayout, QWidget, QBoxLayout)
 from PyQt5.QtWidgets import (QApplication, QPushButton)
 import os
 import sys
+import pexpect
+import getpass
 from encrypt import Encrypt
 from add import Add
 from delete import Delete
@@ -113,7 +115,9 @@ class Window(QWidget):
                     connect += 0.001
                     self.progressBar.setValue(connect)
                     self.widget.close()
-                    QMessageBox.information(self, 'Message', "Drive is formatted.Now you can set password", QMessageBox.Ok)
+                QMessageBox.information(self, 'Message', "Drive is formatted.Now you can set password", QMessageBox.Ok)
+                    
+                if(QMessageBox.Ok):
                     self.Etextbox.setEnabled(True)
                     self.Etextbox1.setEnabled(True)
             else:
@@ -122,9 +126,76 @@ class Window(QWidget):
                     self.widget1.show()
 
     def Finish(self):
-            choice = QMessageBox.information(self, 'Message', "Drive is encrypted.Click 'No' to end .Click 'Yes'to add new key", QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
+
+            if self.Etextbox.text()==self.Etextbox1.text():
+
+
+                label=QLabel("Mapper name")
+                self.map=QLineEdit()
+                btnmapcontinue=QPushButton("Continue")
+
+                self.hboxLayoutmap = QHBoxLayout(self)
+                self.hboxLayoutmap.addWidget(label)
+                self.hboxLayoutmap.addWidget(self.map)
+                self.hboxLayoutmap.addWidget(btnmapcontinue)
+
+                self.mapwidget = QWidget()
+                self.mapwidget.setLayout(self.hboxLayoutmap)
+                self.mapwidget.setWindowTitle('Map Window')
+                self.mapwidget.setGeometry(50, 50, 500, 100)
+                self.mapwidget.show()
+
+                btnmapcontinue.clicked.connect(self.create_luks_partition)
+
+
+
+            else:
+                QMessageBox.warning(self,'Warning',"Password doesn't match",QMessageBox.Ok)
+                if(QMessageBox.Ok):
+                    self.EtextBox.setText("")
+                    self.EtextBox1.setText("")
+
+
+
+
+
+    def create_luks_partition(self):
+
+        self.mapwidget.close()
+
+        child = pexpect.spawn('sudo cryptsetup luksFormat %s'% filesystem[devicename.index(self.EcomboBox.currentText())])
+        child.expect_exact('[sudo] password for %s:'% getpass.getuser())
+        child.sendline(self.password.text())
+        child.expect_exact('\r\nWARNING!\r\n========\r\nThis will overwrite data on %s irrevocably.\r\n\r\nAre you sure? (Type uppercase yes):'% filesystem[devicename.index(self.EcomboBox.currentText())])
+        child.sendline('YES\n')
+
+        child.expect_exact('Enter passphrase:')
+        child.sendline(self.Etextbox.text())
+        child.expect_exact('Verify passphrase:')
+        child.sendline(self.Etextbox1.text())
+        child.expect(pexpect.EOF, timeout=None)
+
+
+        print(filesystem[devicename.index(self.EcomboBox.currentText())],self.map.text(),self.password.text())
+
+        child1=pexpect.spawn('sudo cryptsetup luksOpen %s %s'% (filesystem[devicename.index(self.EcomboBox.currentText())],self.map.text()))
+        child1.expect_exact('[sudo] password for %s:' % getpass.getuser())
+        child1.sendline(self.password.text())
+        child1.expect_exact('Enter passphrase for %s:'% filesystem[devicename.index(self.EcomboBox.currentText())])
+        child1.sendline(self.Etextbox.text())
+        child1.expect(pexpect.EOF, timeout=None)
+
+        command4='mkfs.ext4 /dev/mapper/%s -L %s'%(self.map.text(),self.map.text())
+
+        x=os.system("echo %s | sudo -S %s"% (self.password.text(),command4))
+
+        if x==0:
+
+            choice = QMessageBox.information(self, 'Message',
+                                             "Drive is encrypted.Click 'No' to end .Click 'Yes'to add new key",
+                                             QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
             if choice == QMessageBox.Yes:
-                self.AgroupBox.setChecked(True)
+                self.Acheck.setChecked(True)
             else:
                 sys.exit()
 

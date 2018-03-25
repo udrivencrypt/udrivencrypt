@@ -8,9 +8,12 @@ import getpass
 from encrypt import Encrypt
 from add import Add
 from delete import Delete
+import re
 
 filesystem = []
 devicename = []
+names = []
+labels = []
 
 
 class Window(QWidget):
@@ -85,7 +88,7 @@ class Window(QWidget):
                 self.widget1.setLayout(self.hboxpass)
                 self.widget1.setWindowTitle('Password window')
                 self.widget1.show()
-                btncontinue.clicked.connect(self.passwordfun)
+                btncontinue.clicked.connect(self.passwordfun())
 
     def passwordfun(self):
         self.progressLabel = QLabel('Progress Bar:', self)
@@ -198,6 +201,55 @@ class Window(QWidget):
                 self.Acheck.setChecked(True)
             else:
                 sys.exit()
+
+    def list_encrypted_devices(self):
+        os.system("lsblk -fs -l -n > devices")
+        with open('devices') as f:
+            for line in f:
+                blk_list = re.split('\s+',line)
+                if blk_list[1] == "crypto_LUKS":
+                    names.append(blk_list[0])
+                    id = blk_list[3]
+                    for line1 in f:
+                        blk_list1 = re.split('\s+',line1)
+                        if "luks-"+id in blk_list1[0]:
+                            #device_dict = {'name':blk_list[0],'label':blk_list1[2]}
+                            labels.append(blk_list1[2])
+
+
+
+
+
+        return labels
+
+
+    def addKey(self):
+        if self.AcomboBox.currentIndex() == 0:
+            QMessageBox.information(self, 'Alert', "Please Select Drive", QMessageBox.Close)
+        else:
+            if self.Atextbox1.text()!= self.Atextbox2.text():
+                QMessageBox.warning(self, 'Warning', "Password doesn't match", QMessageBox.Ok)
+                if (QMessageBox.Ok):
+                    self.Atextbox1.setText("")
+                    self.Atextbox2.setText("")
+
+            else:
+                dname = "/dev/"+names[labels.index(self.AcomboBox.currentText())]
+                try:
+                    child = pexpect.spawn(
+                        'sudo cryptsetup luksAddKey %s' % dname)
+                    child.expect_exact('[sudo] password for %s:' % getpass.getuser())
+                    child.sendline(self.Atextbox_t.text())
+                    child.expect_exact('Enter any existing passphrase:')
+                    child.sendline(self.Atextbox.text())
+                    child.expect_exact('Enter new passphrase for key slot:')
+                    child.sendline(self.Atextbox1.text())
+                    child.expect_exact('Verify passphrase:')
+                    child.sendline(self.Atextbox2.text())
+                    child.expect(pexpect.EOF, timeout=None)
+                    QMessageBox.warning(self, 'Message', "Key added.", QMessageBox.Ok)
+                except:
+                    QMessageBox.warning(self, 'Warning', "Try again", QMessageBox.Ok)
 
 
 def main():

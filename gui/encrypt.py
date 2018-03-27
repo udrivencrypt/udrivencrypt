@@ -15,7 +15,7 @@ def Encrypt(self):
     self.EcomboBox.setMinimumWidth(300)
     self.EcomboBox.move(150, 50)
     self.Ebtn = QPushButton("Format", self)
-    self.Ebtn.clicked.connect(self.format)
+    self.Ebtn.clicked.connect(self.password_fun_encrypt)
     label = QLabel()
     label.setText("Enter your Password")
     self.Etextbox = QLineEdit()

@@ -17,16 +17,12 @@ setup(name='udrivencrypt',
       license='GNU General Public License V3.0',
       url='https://github.com/udrivencrypt/udrivencrypt',
       zip_safe=False,
-      install_requires=["pyqt5"],
+      install_requires=["pyqt5","pexpect"],
       classifiers=['Programming Language :: Python'],
       entry_points={
-	'gui_scripts':[
-		'udrivencrypt=gui.main:main'
-	
-	]
-	
-
-	}
-	
+          'gui_scripts':[
+              'udrivencrypt=udrivencrypt.__init__:main'
+          ]
+      },
 
 )

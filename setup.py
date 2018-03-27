@@ -19,5 +19,10 @@ setup(name='udrivencrypt',
       zip_safe=False,
       install_requires=["pyqt5","pexpect"],
       classifiers=['Programming Language :: Python'],
+      entry_points={
+          'gui_scripts':[
+              'udrivencrypt=udrivencrypt.__init__:main'
+          ]
+      },
 
 )

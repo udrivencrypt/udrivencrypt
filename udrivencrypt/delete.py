@@ -9,7 +9,10 @@ def Delete(self):
     self.DcomboBox = QComboBox()
     self.DcomboBox.addItem('Select your drive')
     self.DcomboBox.setMinimumWidth(300)
-    self.DcomboBox.addItems(self.list_encrypted_devices_del())
+    device_list = self.listEncryptedDevices()
+    for ele in device_list:
+        self.DcomboBox.addItem(ele['label'])
+
     label = QLabel()
     label.setText("Enter password to be deleted")
     self.Dtextbox = QLineEdit()

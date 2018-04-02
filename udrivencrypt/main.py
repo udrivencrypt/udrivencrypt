@@ -1,5 +1,5 @@
 from PyQt5.QtWidgets import (QLineEdit, QMessageBox, QProgressBar)
-from PyQt5.QtWidgets import (QLabel,  QHBoxLayout, QWidget, QBoxLayout)
+from PyQt5.QtWidgets import (QLabel,  QHBoxLayout, QVBoxLayout, QWidget, QBoxLayout)
 from PyQt5.QtWidgets import (QApplication, QPushButton)
 import os
 import sys
@@ -93,48 +93,47 @@ class Window(QWidget):
                 self.widget1.show()
                 btncontinue.clicked.connect(self.format)
 
-    def password_fun_add(self):
-        if self.AcomboBox.currentIndex() == 0:
-            QMessageBox.information(self, 'Alert', "Please Select Drive", QMessageBox.Close)
-        else:
-            choices = QMessageBox.question(self, 'Message', "To add new key you need to enter user password.Do you want to continue?", QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
-            if choices == QMessageBox.Yes:
-                self.password1 = QLineEdit()
-                self.password1.setEchoMode(QLineEdit.Password)
-                labelpass1 = QLabel()
-                labelpass1.setText("Enter your password")
-                btncontinue1 = QPushButton("Continue")
-                self.hboxpass1 = QHBoxLayout()
-                self.hboxpass1.addWidget(labelpass1)
-                self.hboxpass1.addWidget(self.password1)
-                self.hboxpass1.addWidget(btncontinue1)
-                self.widget2 = QWidget()
-                self.widget2.setLayout(self.hboxpass1)
-                self.widget2.setWindowTitle('Password window')
-                self.widget2.show()
-                btncontinue1.clicked.connect(self.addKey)
+    def check(self):
+        if self.Acheck.isChecked():
+            if self.AcomboBox.currentIndex() == 0:
+                QMessageBox.information(self, 'Alert', "Please Select Drive", QMessageBox.Close)
+            else:
+                choices = QMessageBox.question(self, 'Message',
+                                               "To add new key you need to enter user password.Do you want to continue?",
+                                               QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
+                self.complete = 0
+                if choices == QMessageBox.Yes:
+                    self.password_popup(self.addKey)
 
-    def password_fun_del(self):
-        if self.DcomboBox.currentIndex() == 0:
-            QMessageBox.information(self, 'Alert', "Please Select Drive", QMessageBox.Close)
-        else:
-            choices = QMessageBox.question(self, 'Message', "To delete existing key you need to enter user password.Do you want to continue?", QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
-            self.complete = 0
-            if choices == QMessageBox.Yes:
-                self.password2 = QLineEdit()
-                self.password2.setEchoMode(QLineEdit.Password)
-                labelpass2 = QLabel()
-                labelpass2.setText("Enter your password")
-                btncontinue2 = QPushButton("Continue")
-                self.hboxpass2 = QHBoxLayout()
-                self.hboxpass2.addWidget(labelpass2)
-                self.hboxpass2.addWidget(self.password2)
-                self.hboxpass2.addWidget(btncontinue2)
-                self.widget3 = QWidget()
-                self.widget3.setLayout(self.hboxpass2)
-                self.widget3.setWindowTitle('Password window')
-                self.widget3.show()
-                btncontinue2.clicked.connect(self.delKey)
+
+        elif self.Dcheck.isChecked():
+            if self.DcomboBox.currentIndex() == 0:
+                QMessageBox.information(self, 'Alert', "Please Select Drive", QMessageBox.Close)
+            else:
+                choices = QMessageBox.question(self, 'Message',
+                                               "To delete key you need to enter user password.Do you want to continue?",
+                                               QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
+                self.complete = 0
+                if choices == QMessageBox.Yes:
+                    self.password_popup(self.delKey)
+
+
+    def password_popup(self,name):
+        self.password_t = QLineEdit()
+        self.password_t.setEchoMode(QLineEdit.Password)
+        labelpass_t = QLabel()
+        labelpass_t.setText("Enter your password:")
+        btncontinue_t = QPushButton("Continue")
+        self.hboxpass_t = QVBoxLayout()
+        self.hboxpass_t.addWidget(labelpass_t)
+        self.hboxpass_t.addWidget(self.password_t)
+        self.hboxpass_t.addWidget(btncontinue_t)
+        self.widget_t = QWidget()
+        self.widget_t.setLayout(self.hboxpass_t)
+        self.widget_t.setWindowTitle('Password Window')
+        self.widget_t.show()
+        btncontinue_t.clicked.connect(name)
+
 
     def format(self):
         self.progressLabel = QLabel('Progress Bar:', self)
@@ -269,7 +268,7 @@ class Window(QWidget):
         return list
 
     def addKey(self):
-        self.widget2.close()
+        self.widget_t.close()
         if self.Atextbox1.text()!= self.Atextbox2.text():
             QMessageBox.warning(self, 'Warning', "Password doesn't match", QMessageBox.Ok)
             if (QMessageBox.Ok):
@@ -288,7 +287,7 @@ class Window(QWidget):
                 child = pexpect.spawn(
                     'sudo cryptsetup luksAddKey %s' % dname)
                 child.expect_exact('[sudo] password for %s:' % getpass.getuser())
-                child.sendline(self.password1.text())
+                child.sendline(self.password_t.text())
                 child.expect_exact('Enter any existing passphrase:')
                 child.sendline(self.Atextbox.text())
                 child.expect_exact('Enter new passphrase for key slot:')
@@ -302,7 +301,7 @@ class Window(QWidget):
 
 
     def delKey(self):
-        self.widget3.close()
+        self.widget_t.close()
         device_list = self.listEncryptedDevices()
         for ele in device_list:
             if ele['label'] == str(self.DcomboBox.currentText()):
@@ -312,7 +311,7 @@ class Window(QWidget):
             child = pexpect.spawn(
                 'sudo cryptsetup luksRemoveKey %s' % dname)
             child.expect_exact('[sudo] password for %s:' % getpass.getuser())
-            child.sendline(self.password2.text())
+            child.sendline(self.password_t.text())
             child.expect_exact('Enter passphrase to be deleted:')
             child.sendline(self.Dtextbox.text())
             child.expect(pexpect.EOF, timeout=None)

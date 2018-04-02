@@ -98,7 +98,6 @@ class Window(QWidget):
             QMessageBox.information(self, 'Alert', "Please Select Drive", QMessageBox.Close)
         else:
             choices = QMessageBox.question(self, 'Message', "To add new key you need to enter user password.Do you want to continue?", QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
-            self.complete = 0
             if choices == QMessageBox.Yes:
                 self.password1 = QLineEdit()
                 self.password1.setEchoMode(QLineEdit.Password)
@@ -251,39 +250,26 @@ class Window(QWidget):
                 else:
                     sys.exit()
 
-    def list_encrypted_devices_add(self):
-        os.system("df -h > device")
-        with open("device", "r") as f:
-            device = []
-            device1 = []
-            for line in f.readlines()[1:]:
-                device.append(line.split()[5])
-                device1.append(line.split()[0])
-            for s in device:
-                if "/run/media" in s:
-                    filesystem1.append(device1[device.index(s)])
-                    devicename1.append(os.path.basename(s))
-        return devicename1
+    def listEncryptedDevices(self):
+        list = []
+        os.system("lsblk -fs -l -n > dev_info")
+        with open("dev_info") as f:
+            for line in f:
+                dev_list = re.split("\s+",line)
+                if dev_list[1] == "crypto_LUKS":
+                    id = dev_list[3]
+                    for line1 in f:
+                        dev_list1 = re.split("\s+",line1)
+                        if "luks-"+id in dev_list1[0]:
+                            list.append({'label':dev_list1[2],'name':dev_list[0]})
 
-    def list_encrypted_devices_del(self):
-        os.system("df -h > device")
-        with open("device", "r") as f:
-            device = []
-            device1 = []
-            for line in f.readlines()[1:]:
-                device.append(line.split()[5])
-                device1.append(line.split()[0])
-            for s in device:
-                if "/run/media" in s:
-                    filesystem2.append(device1[device.index(s)])
-                    devicename2.append(os.path.basename(s))
-        return devicename2
+
+
+
+        return list
 
     def addKey(self):
         self.widget2.close()
-        #if self.AcomboBox.currentIndex() == 0:
-        #    QMessageBox.information(self, 'Alert', "Please Select Drive", QMessageBox.Close)
-        #else:
         if self.Atextbox1.text()!= self.Atextbox2.text():
             QMessageBox.warning(self, 'Warning', "Password doesn't match", QMessageBox.Ok)
             if (QMessageBox.Ok):
@@ -291,10 +277,16 @@ class Window(QWidget):
                 self.Atextbox2.setText("")
 
         else:
-           # dname = "/dev/"+names[labels.index(self.AcomboBox.currentText())]
+            device_list = self.listEncryptedDevices()
+            for ele in device_list:
+                if ele['label'] == str(self.AcomboBox.currentText()):
+                    dname = "/dev/"+ele['name']
+                    print(dname)
+
+
             try:
                 child = pexpect.spawn(
-                    'sudo cryptsetup luksAddKey %s' % filesystem1[devicename1.index(self.AcomboBox.currentText())])
+                    'sudo cryptsetup luksAddKey %s' % dname)
                 child.expect_exact('[sudo] password for %s:' % getpass.getuser())
                 child.sendline(self.password1.text())
                 child.expect_exact('Enter any existing passphrase:')
@@ -311,10 +303,14 @@ class Window(QWidget):
 
     def delKey(self):
         self.widget3.close()
-        #dname = "/dev/"+names[labels.index(self.DcomboBox.currentText())]
+        device_list = self.listEncryptedDevices()
+        for ele in device_list:
+            if ele['label'] == str(self.DcomboBox.currentText()):
+                dname = "/dev/" + ele['name']
+                print(dname)
         try:
             child = pexpect.spawn(
-                'sudo cryptsetup luksRemoveKey %s' % filesystem2[devicename2.index(self.DcomboBox.currentText())])
+                'sudo cryptsetup luksRemoveKey %s' % dname)
             child.expect_exact('[sudo] password for %s:' % getpass.getuser())
             child.sendline(self.password2.text())
             child.expect_exact('Enter passphrase to be deleted:')

@@ -26,7 +26,7 @@ def Delete(self):
     #self.Dtextbox1.setEnabled(False)
     #self.Dtextbox1.setMaxLength(10)
     self.Dbtn1 = QPushButton("Finish", self)
-    self.Dbtn1.clicked.connect(self.password_fun_del)
+    self.Dbtn1.clicked.connect(self.check)
     vbox = QVBoxLayout()
     vbox.addWidget(self.DcomboBox)
     vbox.addWidget(label)

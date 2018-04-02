@@ -37,7 +37,7 @@ def Add(self):
     #self.Atextbox2.setEnabled(False)
     self.Atextbox2.setMaxLength(10)
     self.Abtn1 = QPushButton("Finish", self)
-    self.Abtn1.clicked.connect(self.password_fun_add)
+    self.Abtn1.clicked.connect(self.check)
     vbox = QVBoxLayout()
     vbox.addWidget(self.AcomboBox)
     #vbox.addWidget(label_t)

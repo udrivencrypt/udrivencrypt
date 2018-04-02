@@ -10,7 +10,10 @@ def Add(self):
     self.AcomboBox = QComboBox()
     self.AcomboBox.addItem('Select your drive')
     self.AcomboBox.setMinimumWidth(300)
-    self.AcomboBox.addItems(self.list_encrypted_devices_add())
+    device_list = self.listEncryptedDevices()
+    for ele in device_list:
+        self.AcomboBox.addItem(ele['label'])
+
     label = QLabel()
     label.setText("Enter any existing password")
     self.Atextbox = QLineEdit()

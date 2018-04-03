@@ -5,19 +5,13 @@ import os
 import sys
 import pexpect
 import getpass
-from encrypt import Encrypt
-from add import Add
-from delete import Delete
+from udrivencrypt.encrypt import Encrypt
+from udrivencrypt.add import Add
+from udrivencrypt.delete import Delete
 import re
 
 filesystem = []
 devicename = []
-devicename1 = []
-filesystem1 = []
-devicename2 = []
-filesystem2 = []
-
-
 
 class Window(QWidget):
     def __init__(self):
@@ -71,27 +65,6 @@ class Window(QWidget):
         else:
             self.DgroupBox.setVisible(False)
 
-    def password_fun_encrypt(self):
-        if self.EcomboBox.currentIndex() == 0:
-            QMessageBox.information(self, 'Alert', "Please Select Drive", QMessageBox.Close)
-        else:
-            choices = QMessageBox.question(self, 'Message', "To format disk you need to enter user password.Do you want to continue?", QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
-            self.complete = 0
-            if choices == QMessageBox.Yes:
-                self.password = QLineEdit()
-                self.password.setEchoMode(QLineEdit.Password)
-                labelpass = QLabel()
-                labelpass.setText("Enter your password")
-                btncontinue = QPushButton("Continue")
-                self.hboxpass = QHBoxLayout()
-                self.hboxpass.addWidget(labelpass)
-                self.hboxpass.addWidget(self.password)
-                self.hboxpass.addWidget(btncontinue)
-                self.widget1 = QWidget()
-                self.widget1.setLayout(self.hboxpass)
-                self.widget1.setWindowTitle('Password window')
-                self.widget1.show()
-                btncontinue.clicked.connect(self.format)
 
     def check(self):
         if self.Acheck.isChecked():
@@ -116,6 +89,18 @@ class Window(QWidget):
                 self.complete = 0
                 if choices == QMessageBox.Yes:
                     self.password_popup(self.delKey)
+
+
+        elif self.Echeck.isChecked():
+            if self.EcomboBox.currentIndex() == 0:
+                QMessageBox.information(self, 'Alert', "Please Select Drive", QMessageBox.Close)
+            else:
+                choices = QMessageBox.question(self, 'Message',
+                                               "To format disk you need to enter user password.Do you want to continue?",
+                                               QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
+                self.complete = 0
+                if choices == QMessageBox.Yes:
+                    self.password_popup(self.format)
 
 
     def password_popup(self,name):
@@ -147,16 +132,16 @@ class Window(QWidget):
         self.hboxLayout.addWidget(self.btn)
         command = 'umount %s' % filesystem[devicename.index(self.EcomboBox.currentText())]
         command1 = 'wipefs -a %s' % filesystem[devicename.index(self.EcomboBox.currentText())]
-        x = os.system("echo %s |sudo -S %s" % (self.password.text(), command))
+        x = os.system("echo %s |sudo -S %s" % (self.password_t.text(), command))
 
         if x == 0:
-            y = os.system("echo %s |sudo -S %s" % (self.password.text(), command1))
+            y = os.system("echo %s |sudo -S %s" % (self.password_t.text(), command1))
             if y == 0:
                 self.widget = QWidget()
                 self.widget.setLayout(self.hboxLayout)
                 self.widget.setWindowTitle('Dialog with Progressbar')
                 self.widget.setGeometry(50, 50, 500, 100)
-                self.widget1.close()
+                self.widget_t.close()
                 self.widget.show()
                 connect = 0
                 while connect < 100:
@@ -213,7 +198,7 @@ class Window(QWidget):
 
         child = pexpect.spawn('sudo cryptsetup luksFormat %s'% filesystem[devicename.index(self.EcomboBox.currentText())])
         child.expect_exact('[sudo] password for %s:'% getpass.getuser())
-        child.sendline(self.password.text())
+        child.sendline(self.password_t.text())
         child.expect_exact('\r\nWARNING!\r\n========\r\nThis will overwrite data on %s irrevocably.\r\n\r\nAre you sure? (Type uppercase yes):'% filesystem[devicename.index(self.EcomboBox.currentText())])
         child.sendline('YES\n')
 
@@ -224,11 +209,11 @@ class Window(QWidget):
         child.expect(pexpect.EOF, timeout=None)
 
 
-        print(filesystem[devicename.index(self.EcomboBox.currentText())],self.map.text(),self.password.text())
+        print(filesystem[devicename.index(self.EcomboBox.currentText())],self.map.text(),self.password_t.text())
 
         child1=pexpect.spawn('sudo cryptsetup luksOpen %s %s'% (filesystem[devicename.index(self.EcomboBox.currentText())],self.map.text()))
         child1.expect_exact('[sudo] password for %s:' % getpass.getuser())
-        child1.sendline(self.password.text())
+        child1.sendline(self.password_t.text())
         child1.expect_exact('Enter passphrase for %s:'% filesystem[devicename.index(self.EcomboBox.currentText())])
         child1.sendline(self.Etextbox.text())
         child1.expect(pexpect.EOF, timeout=None)
@@ -236,10 +221,10 @@ class Window(QWidget):
         command4='mkfs.ext4 /dev/mapper/%s -L %s'%(self.map.text(),self.map.text())
         command5='cryptsetup luksClose %s'%(self.map.text())
 
-        x=os.system("echo %s | sudo -S %s"% (self.password.text(),command4))
+        x=os.system("echo %s | sudo -S %s"% (self.password_t.text(),command4))
 
         if x==0:
-            y=os.system("echo %s | sudo -S %s"%(self.password.text(),command5))
+            y=os.system("echo %s | sudo -S %s"%(self.password_t.text(),command5))
             if y==0:
                 choice = QMessageBox.information(self, 'Message',
                                                  "Drive is encrypted.Click 'No' to end .Click 'Yes'to add new key",

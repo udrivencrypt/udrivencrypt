@@ -15,10 +15,13 @@ devicename = []
 
 class Window(QWidget):
     def __init__(self):
+        """
+        The function which sets layout for main application window.
+        """
         super(Window, self).__init__()
         self.layout = QBoxLayout(QBoxLayout.TopToBottom)
         self.setLayout(self.layout)
-        self.setWindowTitle("GUI")
+        self.setWindowTitle("udrivencrypt")
         self.setFixedSize(500, 500)
         Encrypt(self)
         Add(self)
@@ -353,6 +356,9 @@ class Window(QWidget):
 
 
 def main():
+    """
+    udrivencrypt: GUI to encrypt USB drives.
+    """
     app = QApplication(sys.argv)
     window = Window()
     window.show()

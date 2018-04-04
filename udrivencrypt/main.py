@@ -28,6 +28,13 @@ class Window(QWidget):
         self.Echeck.toggle()
 
     def list_device(self):
+        """
+        The function to list all connected USB drives.
+        It uses 'df -h' command to filter connected USB drives by checking mount point.
+
+        :return:
+            devicename: label of each USB drive.
+        """
         os.system("df -h > device")
         with open("device", "r") as f:
             device = []
@@ -42,6 +49,11 @@ class Window(QWidget):
         return devicename
 
     def Entoggle(self):
+        """
+        The function to check whether 'Echeck' is checked or not and perform actions accordingly.
+
+        :return: None
+        """
         if self.Echeck.isChecked() is True:
             self.EgroupBox.setVisible(True)
             self.Acheck.setChecked(False)
@@ -50,6 +62,11 @@ class Window(QWidget):
             self.EgroupBox.setVisible(False)
 
     def Atoggle(self):
+        """
+        The function to check whether 'Acheck' is checked or not and perform actions accordingly.
+
+        :return: None
+        """
         if self.Acheck.isChecked() is True:
             self.AgroupBox.setVisible(True)
             self.Echeck.setChecked(False)
@@ -58,6 +75,11 @@ class Window(QWidget):
             self.AgroupBox.setVisible(False)
 
     def Dtoggle(self):
+        """
+        The function to check whether 'Dcheck' is checked or not and perform actions accordingly.
+
+        :return: None
+        """
         if self.Dcheck.isChecked() is True:
             self.DgroupBox.setVisible(True)
             self.Echeck.setChecked(False)
@@ -67,6 +89,12 @@ class Window(QWidget):
 
 
     def check(self):
+        """
+        The function to check which checkbox is checked, whether any drive from corresponding
+        drop-down menu is selected or not and prompt message accordingly.
+
+        :return: None
+        """
         if self.Acheck.isChecked():
             if self.AcomboBox.currentIndex() == 0:
                 QMessageBox.information(self, 'Alert', "Please Select Drive", QMessageBox.Close)
@@ -103,7 +131,13 @@ class Window(QWidget):
                     self.password_popup(self.format)
 
 
+
     def password_popup(self,name):
+        """
+        The function to show popup window for superuser password.
+        :param name: function to be called when 'Continue' button is clicked.
+        :return: None
+        """
         self.password_t = QLineEdit()
         self.password_t.setEchoMode(QLineEdit.Password)
         labelpass_t = QLabel()
@@ -121,6 +155,11 @@ class Window(QWidget):
 
 
     def format(self):
+        """
+        The function to unmount the device and erase all signatures.
+
+        :return: None
+        """
         self.progressLabel = QLabel('Progress Bar:', self)
         self.progressBar = QProgressBar(self)
         self.progressBar.setMaximum(100)
@@ -149,7 +188,7 @@ class Window(QWidget):
                     self.progressBar.setValue(connect)
                     self.widget.close()
                 QMessageBox.information(self, 'Message', "Drive is formatted.Now you can set password", QMessageBox.Ok)
-                    
+
                 if(QMessageBox.Ok):
                     self.Etextbox.setEnabled(True)
                     self.Etextbox1.setEnabled(True)
@@ -159,70 +198,59 @@ class Window(QWidget):
                     self.widget1.show()
 
     def Finish(self):
+        """
+        The function to show popup window for label to be given to device.
 
-            if self.Etextbox.text()==self.Etextbox1.text():
-
-
-                label=QLabel("Mapper name")
-                self.map=QLineEdit()
-                btnmapcontinue=QPushButton("Continue")
-
-                self.hboxLayoutmap = QHBoxLayout(self)
-                self.hboxLayoutmap.addWidget(label)
-                self.hboxLayoutmap.addWidget(self.map)
-                self.hboxLayoutmap.addWidget(btnmapcontinue)
-
-                self.mapwidget = QWidget()
-                self.mapwidget.setLayout(self.hboxLayoutmap)
-                self.mapwidget.setWindowTitle('Map Window')
-                self.mapwidget.setGeometry(50, 50, 500, 100)
-                self.mapwidget.show()
-
-                btnmapcontinue.clicked.connect(self.create_luks_partition)
-
-
-
-            else:
-                QMessageBox.warning(self,'Warning',"Password doesn't match",QMessageBox.Ok)
-                if(QMessageBox.Ok):
-                    self.EtextBox.setText("")
-                    self.EtextBox1.setText("")
-
-
-
+        :return: None
+        """
+        if self.Etextbox.text()==self.Etextbox1.text():
+            label=QLabel("Mapper name")
+            self.map=QLineEdit()
+            btnmapcontinue=QPushButton("Continue")
+            self.hboxLayoutmap = QHBoxLayout(self)
+            self.hboxLayoutmap.addWidget(label)
+            self.hboxLayoutmap.addWidget(self.map)
+            self.hboxLayoutmap.addWidget(btnmapcontinue)
+            self.mapwidget = QWidget()
+            self.mapwidget.setLayout(self.hboxLayoutmap)
+            self.mapwidget.setWindowTitle('Map Window')
+            self.mapwidget.setGeometry(50, 50, 500, 100)
+            self.mapwidget.show()
+            btnmapcontinue.clicked.connect(self.create_luks_partition)
+        else:
+            QMessageBox.warning(self,'Warning',"Password doesn't match",QMessageBox.Ok)
+            if(QMessageBox.Ok):
+                self.EtextBox.setText("")
+                self.EtextBox1.setText("")
 
 
     def create_luks_partition(self):
+        """
+        The function to encrypt device using cryptsetup commands.
 
+        :return: None
+        """
         self.mapwidget.close()
-
         child = pexpect.spawn('sudo cryptsetup luksFormat %s'% filesystem[devicename.index(self.EcomboBox.currentText())])
         child.expect_exact('[sudo] password for %s:'% getpass.getuser())
         child.sendline(self.password_t.text())
         child.expect_exact('\r\nWARNING!\r\n========\r\nThis will overwrite data on %s irrevocably.\r\n\r\nAre you sure? (Type uppercase yes):'% filesystem[devicename.index(self.EcomboBox.currentText())])
         child.sendline('YES\n')
-
         child.expect_exact('Enter passphrase:')
         child.sendline(self.Etextbox.text())
         child.expect_exact('Verify passphrase:')
         child.sendline(self.Etextbox1.text())
         child.expect(pexpect.EOF, timeout=None)
-
-
-        print(filesystem[devicename.index(self.EcomboBox.currentText())],self.map.text(),self.password_t.text())
-
+        #print(filesystem[devicename.index(self.EcomboBox.currentText())],self.map.text(),self.password_t.text())
         child1=pexpect.spawn('sudo cryptsetup luksOpen %s %s'% (filesystem[devicename.index(self.EcomboBox.currentText())],self.map.text()))
         child1.expect_exact('[sudo] password for %s:' % getpass.getuser())
         child1.sendline(self.password_t.text())
         child1.expect_exact('Enter passphrase for %s:'% filesystem[devicename.index(self.EcomboBox.currentText())])
         child1.sendline(self.Etextbox.text())
         child1.expect(pexpect.EOF, timeout=None)
-
         command4='mkfs.ext4 /dev/mapper/%s -L %s'%(self.map.text(),self.map.text())
         command5='cryptsetup luksClose %s'%(self.map.text())
-
         x=os.system("echo %s | sudo -S %s"% (self.password_t.text(),command4))
-
         if x==0:
             y=os.system("echo %s | sudo -S %s"%(self.password_t.text(),command5))
             if y==0:
@@ -234,7 +262,16 @@ class Window(QWidget):
                 else:
                     sys.exit()
 
+
     def listEncryptedDevices(self):
+        """
+        The function to list all already encrypted devices.
+        It uses 'lsblk' command to filter only encrypted devices by checking FSTYPE.
+
+        :return:
+            list: list of dictionaries which contain 'label' and 'name' of
+                    each encrypted device.
+        """
         list = []
         os.system("lsblk -fs -l -n > dev_info")
         with open("dev_info") as f:
@@ -253,6 +290,11 @@ class Window(QWidget):
         return list
 
     def addKey(self):
+        """
+        The function to a add new backup key for already encrypted device.
+
+        :return: None
+        """
         self.widget_t.close()
         if self.Atextbox1.text()!= self.Atextbox2.text():
             QMessageBox.warning(self, 'Warning', "Password doesn't match", QMessageBox.Ok)
@@ -286,6 +328,11 @@ class Window(QWidget):
 
 
     def delKey(self):
+        """
+        The function to delete an existing key.
+
+        :return: None
+        """
         self.widget_t.close()
         device_list = self.listEncryptedDevices()
         for ele in device_list:

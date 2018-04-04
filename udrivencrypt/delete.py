@@ -2,6 +2,11 @@ from PyQt5.QtWidgets import (QCheckBox, QGroupBox, QComboBox, QLineEdit)
 from PyQt5.QtWidgets import (QLabel, QPushButton, QVBoxLayout)
 
 def Delete(self):
+    """
+    The function which enables groupbox for deleting an existing key.
+
+    :return: None
+    """
     self.Dcheck = QCheckBox('Delete Keys', self)
     self.Dcheck.stateChanged.connect(self.Dtoggle)
     self.layout.addWidget(self.Dcheck)

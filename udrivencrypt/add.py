@@ -3,6 +3,11 @@ from PyQt5.QtWidgets import (QLabel, QPushButton, QVBoxLayout)
 
 
 def Add(self):
+    """
+    The function which enables groupbox for adding new key.
+
+    :return: None
+    """
     self.Acheck = QCheckBox('Add Keys', self)
     self.Acheck.stateChanged.connect(self.Atoggle)
     self.layout.addWidget(self.Acheck)

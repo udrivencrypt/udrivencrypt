@@ -3,6 +3,11 @@ from PyQt5.QtWidgets import (QLabel, QPushButton, QVBoxLayout)
 
 
 def Encrypt(self):
+    """
+    The function which enables groupbox for encryption of drives.
+
+    :return: None
+    """
     self.Echeck = QCheckBox('Encrypt USB Drive', self)
     self.Echeck.stateChanged.connect(self.Entoggle)
     self.layout.addWidget(self.Echeck)

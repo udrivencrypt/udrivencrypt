@@ -144,7 +144,7 @@ class Window(QWidget):
         self.password_t = QLineEdit()
         self.password_t.setEchoMode(QLineEdit.Password)
         labelpass_t = QLabel()
-        labelpass_t.setText("Enter your password:")
+        labelpass_t.setText("Enter user password:")
         btncontinue_t = QPushButton("Continue")
         self.hboxpass_t = QVBoxLayout()
         self.hboxpass_t.addWidget(labelpass_t)
@@ -207,7 +207,7 @@ class Window(QWidget):
         :return: None
         """
         if self.Etextbox.text()==self.Etextbox1.text():
-            label=QLabel("Mapper name")
+            label=QLabel("Enter new name for drive")
             self.map=QLineEdit()
             btnmapcontinue=QPushButton("Continue")
             self.hboxLayoutmap = QHBoxLayout(self)

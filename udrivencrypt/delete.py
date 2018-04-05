@@ -2,6 +2,11 @@ from PyQt5.QtWidgets import (QCheckBox, QGroupBox, QComboBox, QLineEdit)
 from PyQt5.QtWidgets import (QLabel, QPushButton, QVBoxLayout)
 
 def Delete(self):
+    """
+    The function which enables groupbox for deleting an existing key.
+
+    :return: None
+    """
     self.Dcheck = QCheckBox('Delete Keys', self)
     self.Dcheck.stateChanged.connect(self.Dtoggle)
     self.layout.addWidget(self.Dcheck)
@@ -9,7 +14,10 @@ def Delete(self):
     self.DcomboBox = QComboBox()
     self.DcomboBox.addItem('Select your drive')
     self.DcomboBox.setMinimumWidth(300)
-    self.DcomboBox.addItems(self.list_encrypted_devices_del())
+    device_list = self.listEncryptedDevices()
+    for ele in device_list:
+        self.DcomboBox.addItem(ele)
+
     label = QLabel()
     label.setText("Enter password to be deleted")
     self.Dtextbox = QLineEdit()
@@ -23,7 +31,7 @@ def Delete(self):
     #self.Dtextbox1.setEnabled(False)
     #self.Dtextbox1.setMaxLength(10)
     self.Dbtn1 = QPushButton("Finish", self)
-    self.Dbtn1.clicked.connect(self.password_fun_del)
+    self.Dbtn1.clicked.connect(self.check)
     vbox = QVBoxLayout()
     vbox.addWidget(self.DcomboBox)
     vbox.addWidget(label)

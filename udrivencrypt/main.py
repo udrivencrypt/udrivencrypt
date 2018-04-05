@@ -1,30 +1,27 @@
 from PyQt5.QtWidgets import (QLineEdit, QMessageBox, QProgressBar)
-from PyQt5.QtWidgets import (QLabel,  QHBoxLayout, QWidget, QBoxLayout)
+from PyQt5.QtWidgets import (QLabel,  QHBoxLayout, QVBoxLayout, QWidget, QBoxLayout)
 from PyQt5.QtWidgets import (QApplication, QPushButton)
 import os
 import sys
 import pexpect
 import getpass
-from encrypt import Encrypt
-from add import Add
-from delete import Delete
+from udrivencrypt.encrypt import Encrypt
+from udrivencrypt.add import Add
+from udrivencrypt.delete import Delete
 import re
 
 filesystem = []
 devicename = []
-devicename1 = []
-filesystem1 = []
-devicename2 = []
-filesystem2 = []
-
-
 
 class Window(QWidget):
     def __init__(self):
+        """
+        The function which sets layout for main application window.
+        """
         super(Window, self).__init__()
         self.layout = QBoxLayout(QBoxLayout.TopToBottom)
         self.setLayout(self.layout)
-        self.setWindowTitle("GUI")
+        self.setWindowTitle("udrivencrypt")
         self.setFixedSize(500, 500)
         Encrypt(self)
         Add(self)
@@ -34,6 +31,13 @@ class Window(QWidget):
         self.Echeck.toggle()
 
     def list_device(self):
+        """
+        The function to list all connected USB drives.
+        It uses 'df -h' command to filter connected USB drives by checking mount point.
+
+        :return:
+            devicename: label of each USB drive.
+        """
         os.system("df -h > device")
         with open("device", "r") as f:
             device = []
@@ -48,6 +52,11 @@ class Window(QWidget):
         return devicename
 
     def Entoggle(self):
+        """
+        The function to check whether 'Echeck' is checked or not and perform actions accordingly.
+
+        :return: None
+        """
         if self.Echeck.isChecked() is True:
             self.EgroupBox.setVisible(True)
             self.Acheck.setChecked(False)
@@ -56,6 +65,11 @@ class Window(QWidget):
             self.EgroupBox.setVisible(False)
 
     def Atoggle(self):
+        """
+        The function to check whether 'Acheck' is checked or not and perform actions accordingly.
+
+        :return: None
+        """
         if self.Acheck.isChecked() is True:
             self.AgroupBox.setVisible(True)
             self.Echeck.setChecked(False)
@@ -64,6 +78,11 @@ class Window(QWidget):
             self.AgroupBox.setVisible(False)
 
     def Dtoggle(self):
+        """
+        The function to check whether 'Dcheck' is checked or not and perform actions accordingly.
+
+        :return: None
+        """
         if self.Dcheck.isChecked() is True:
             self.DgroupBox.setVisible(True)
             self.Echeck.setChecked(False)
@@ -71,73 +90,79 @@ class Window(QWidget):
         else:
             self.DgroupBox.setVisible(False)
 
-    def password_fun_encrypt(self):
-        if self.EcomboBox.currentIndex() == 0:
-            QMessageBox.information(self, 'Alert', "Please Select Drive", QMessageBox.Close)
-        else:
-            choices = QMessageBox.question(self, 'Message', "To format disk you need to enter user password.Do you want to continue?", QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
-            self.complete = 0
-            if choices == QMessageBox.Yes:
-                self.password = QLineEdit()
-                self.password.setEchoMode(QLineEdit.Password)
-                labelpass = QLabel()
-                labelpass.setText("Enter your password")
-                btncontinue = QPushButton("Continue")
-                self.hboxpass = QHBoxLayout()
-                self.hboxpass.addWidget(labelpass)
-                self.hboxpass.addWidget(self.password)
-                self.hboxpass.addWidget(btncontinue)
-                self.widget1 = QWidget()
-                self.widget1.setLayout(self.hboxpass)
-                self.widget1.setWindowTitle('Password window')
-                self.widget1.show()
-                btncontinue.clicked.connect(self.format)
 
-    def password_fun_add(self):
-        if self.AcomboBox.currentIndex() == 0:
-            QMessageBox.information(self, 'Alert', "Please Select Drive", QMessageBox.Close)
-        else:
-            choices = QMessageBox.question(self, 'Message', "To add new key you need to enter user password.Do you want to continue?", QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
-            self.complete = 0
-            if choices == QMessageBox.Yes:
-                self.password1 = QLineEdit()
-                self.password1.setEchoMode(QLineEdit.Password)
-                labelpass1 = QLabel()
-                labelpass1.setText("Enter your password")
-                btncontinue1 = QPushButton("Continue")
-                self.hboxpass1 = QHBoxLayout()
-                self.hboxpass1.addWidget(labelpass1)
-                self.hboxpass1.addWidget(self.password1)
-                self.hboxpass1.addWidget(btncontinue1)
-                self.widget2 = QWidget()
-                self.widget2.setLayout(self.hboxpass1)
-                self.widget2.setWindowTitle('Password window')
-                self.widget2.show()
-                btncontinue1.clicked.connect(self.addKey)
+    def check(self):
+        """
+        The function to check which checkbox is checked, whether any drive from corresponding
+        drop-down menu is selected or not and prompt message accordingly.
 
-    def password_fun_del(self):
-        if self.DcomboBox.currentIndex() == 0:
-            QMessageBox.information(self, 'Alert', "Please Select Drive", QMessageBox.Close)
-        else:
-            choices = QMessageBox.question(self, 'Message', "To delete existing key you need to enter user password.Do you want to continue?", QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
-            self.complete = 0
-            if choices == QMessageBox.Yes:
-                self.password2 = QLineEdit()
-                self.password2.setEchoMode(QLineEdit.Password)
-                labelpass2 = QLabel()
-                labelpass2.setText("Enter your password")
-                btncontinue2 = QPushButton("Continue")
-                self.hboxpass2 = QHBoxLayout()
-                self.hboxpass2.addWidget(labelpass2)
-                self.hboxpass2.addWidget(self.password2)
-                self.hboxpass2.addWidget(btncontinue2)
-                self.widget3 = QWidget()
-                self.widget3.setLayout(self.hboxpass2)
-                self.widget3.setWindowTitle('Password window')
-                self.widget3.show()
-                btncontinue2.clicked.connect(self.delKey)
+        :return: None
+        """
+        if self.Acheck.isChecked():
+            if self.AcomboBox.currentIndex() == 0:
+                QMessageBox.information(self, 'Alert', "Please Select Drive", QMessageBox.Close)
+            else:
+                choices = QMessageBox.question(self, 'Message',
+                                               "To add new key you need to enter user password.Do you want to continue?",
+                                               QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
+                self.complete = 0
+                if choices == QMessageBox.Yes:
+                    self.password_popup(self.addKey)
+
+
+        elif self.Dcheck.isChecked():
+            if self.DcomboBox.currentIndex() == 0:
+                QMessageBox.information(self, 'Alert', "Please Select Drive", QMessageBox.Close)
+            else:
+                choices = QMessageBox.question(self, 'Message',
+                                               "To delete key you need to enter user password.Do you want to continue?",
+                                               QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
+                self.complete = 0
+                if choices == QMessageBox.Yes:
+                    self.password_popup(self.delKey)
+
+
+        elif self.Echeck.isChecked():
+            if self.EcomboBox.currentIndex() == 0:
+                QMessageBox.information(self, 'Alert', "Please Select Drive", QMessageBox.Close)
+            else:
+                choices = QMessageBox.question(self, 'Message',
+                                               "To format disk you need to enter user password.Do you want to continue?",
+                                               QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
+                self.complete = 0
+                if choices == QMessageBox.Yes:
+                    self.password_popup(self.format)
+
+
+
+    def password_popup(self,name):
+        """
+        The function to show popup window for superuser password.
+        :param name: function to be called when 'Continue' button is clicked.
+        :return: None
+        """
+        self.password_t = QLineEdit()
+        self.password_t.setEchoMode(QLineEdit.Password)
+        labelpass_t = QLabel()
+        labelpass_t.setText("Enter user password:")
+        btncontinue_t = QPushButton("Continue")
+        self.hboxpass_t = QVBoxLayout()
+        self.hboxpass_t.addWidget(labelpass_t)
+        self.hboxpass_t.addWidget(self.password_t)
+        self.hboxpass_t.addWidget(btncontinue_t)
+        self.widget_t = QWidget()
+        self.widget_t.setLayout(self.hboxpass_t)
+        self.widget_t.setWindowTitle('Password Window')
+        self.widget_t.show()
+        btncontinue_t.clicked.connect(name)
+
 
     def format(self):
+        """
+        The function to unmount the device and erase all signatures.
+
+        :return: None
+        """
         self.progressLabel = QLabel('Progress Bar:', self)
         self.progressBar = QProgressBar(self)
         self.progressBar.setMaximum(100)
@@ -149,16 +174,16 @@ class Window(QWidget):
         self.hboxLayout.addWidget(self.btn)
         command = 'umount %s' % filesystem[devicename.index(self.EcomboBox.currentText())]
         command1 = 'wipefs -a %s' % filesystem[devicename.index(self.EcomboBox.currentText())]
-        x = os.system("echo %s |sudo -S %s" % (self.password.text(), command))
+        x = os.system("echo %s |sudo -S %s" % (self.password_t.text(), command))
 
         if x == 0:
-            y = os.system("echo %s |sudo -S %s" % (self.password.text(), command1))
+            y = os.system("echo %s |sudo -S %s" % (self.password_t.text(), command1))
             if y == 0:
                 self.widget = QWidget()
                 self.widget.setLayout(self.hboxLayout)
                 self.widget.setWindowTitle('Dialog with Progressbar')
                 self.widget.setGeometry(50, 50, 500, 100)
-                self.widget1.close()
+                self.widget_t.close()
                 self.widget.show()
                 connect = 0
                 while connect < 100:
@@ -166,7 +191,7 @@ class Window(QWidget):
                     self.progressBar.setValue(connect)
                     self.widget.close()
                 QMessageBox.information(self, 'Message', "Drive is formatted.Now you can set password", QMessageBox.Ok)
-                    
+
                 if(QMessageBox.Ok):
                     self.Etextbox.setEnabled(True)
                     self.Etextbox1.setEnabled(True)
@@ -176,72 +201,61 @@ class Window(QWidget):
                     self.widget1.show()
 
     def Finish(self):
+        """
+        The function to show popup window for label to be given to device.
 
-            if self.Etextbox.text()==self.Etextbox1.text():
-
-
-                label=QLabel("Mapper name")
-                self.map=QLineEdit()
-                btnmapcontinue=QPushButton("Continue")
-
-                self.hboxLayoutmap = QHBoxLayout(self)
-                self.hboxLayoutmap.addWidget(label)
-                self.hboxLayoutmap.addWidget(self.map)
-                self.hboxLayoutmap.addWidget(btnmapcontinue)
-
-                self.mapwidget = QWidget()
-                self.mapwidget.setLayout(self.hboxLayoutmap)
-                self.mapwidget.setWindowTitle('Map Window')
-                self.mapwidget.setGeometry(50, 50, 500, 100)
-                self.mapwidget.show()
-
-                btnmapcontinue.clicked.connect(self.create_luks_partition)
-
-
-
-            else:
-                QMessageBox.warning(self,'Warning',"Password doesn't match",QMessageBox.Ok)
-                if(QMessageBox.Ok):
-                    self.EtextBox.setText("")
-                    self.EtextBox1.setText("")
-
-
-
+        :return: None
+        """
+        if self.Etextbox.text()==self.Etextbox1.text():
+            label=QLabel("Enter new name for drive")
+            self.map=QLineEdit()
+            btnmapcontinue=QPushButton("Continue")
+            self.hboxLayoutmap = QHBoxLayout(self)
+            self.hboxLayoutmap.addWidget(label)
+            self.hboxLayoutmap.addWidget(self.map)
+            self.hboxLayoutmap.addWidget(btnmapcontinue)
+            self.mapwidget = QWidget()
+            self.mapwidget.setLayout(self.hboxLayoutmap)
+            self.mapwidget.setWindowTitle('Map Window')
+            self.mapwidget.setGeometry(50, 50, 500, 100)
+            self.mapwidget.show()
+            btnmapcontinue.clicked.connect(self.create_luks_partition)
+        else:
+            QMessageBox.warning(self,'Warning',"Password doesn't match",QMessageBox.Ok)
+            if(QMessageBox.Ok):
+                self.EtextBox.setText("")
+                self.EtextBox1.setText("")
 
 
     def create_luks_partition(self):
+        """
+        The function to encrypt device using cryptsetup commands.
 
+        :return: None
+        """
         self.mapwidget.close()
-
         child = pexpect.spawn('sudo cryptsetup luksFormat %s'% filesystem[devicename.index(self.EcomboBox.currentText())])
         child.expect_exact('[sudo] password for %s:'% getpass.getuser())
-        child.sendline(self.password.text())
+        child.sendline(self.password_t.text())
         child.expect_exact('\r\nWARNING!\r\n========\r\nThis will overwrite data on %s irrevocably.\r\n\r\nAre you sure? (Type uppercase yes):'% filesystem[devicename.index(self.EcomboBox.currentText())])
         child.sendline('YES\n')
-
         child.expect_exact('Enter passphrase:')
         child.sendline(self.Etextbox.text())
         child.expect_exact('Verify passphrase:')
         child.sendline(self.Etextbox1.text())
         child.expect(pexpect.EOF, timeout=None)
-
-
-        print(filesystem[devicename.index(self.EcomboBox.currentText())],self.map.text(),self.password.text())
-
+        #print(filesystem[devicename.index(self.EcomboBox.currentText())],self.map.text(),self.password_t.text())
         child1=pexpect.spawn('sudo cryptsetup luksOpen %s %s'% (filesystem[devicename.index(self.EcomboBox.currentText())],self.map.text()))
         child1.expect_exact('[sudo] password for %s:' % getpass.getuser())
-        child1.sendline(self.password.text())
+        child1.sendline(self.password_t.text())
         child1.expect_exact('Enter passphrase for %s:'% filesystem[devicename.index(self.EcomboBox.currentText())])
         child1.sendline(self.Etextbox.text())
         child1.expect(pexpect.EOF, timeout=None)
-
         command4='mkfs.ext4 /dev/mapper/%s -L %s'%(self.map.text(),self.map.text())
         command5='cryptsetup luksClose %s'%(self.map.text())
-
-        x=os.system("echo %s | sudo -S %s"% (self.password.text(),command4))
-
+        x=os.system("echo %s | sudo -S %s"% (self.password_t.text(),command4))
         if x==0:
-            y=os.system("echo %s | sudo -S %s"%(self.password.text(),command5))
+            y=os.system("echo %s | sudo -S %s"%(self.password_t.text(),command5))
             if y==0:
                 choice = QMessageBox.information(self, 'Message',
                                                  "Drive is encrypted.Click 'No' to end .Click 'Yes'to add new key",
@@ -251,39 +265,43 @@ class Window(QWidget):
                 else:
                     sys.exit()
 
-    def list_encrypted_devices_add(self):
-        os.system("df -h > device")
+
+    def listEncryptedDevices(self):
+        """
+        The function to list all already encrypted devices.
+        It uses 'lsblk' command to filter only encrypted devices by checking FSTYPE.
+
+        :return:
+            devicename1: list of labels for each encrypted device
+        """
+        os.system("lsblk --raw | grep 'crypt'> device ")
         with open("device", "r") as f:
-            device = []
-            device1 = []
-            for line in f.readlines()[1:]:
-                device.append(line.split()[5])
-                device1.append(line.split()[0])
-            for s in device:
-                if "/run/media" in s:
-                    filesystem1.append(device1[device.index(s)])
-                    devicename1.append(os.path.basename(s))
+            UUID = []
+            devicename1 = []
+            self.filesystem = []
+
+            for line in f.readlines():
+                devicename1.append(os.path.basename(line.split()[6]))
+                UUID.append(line.split()[0])
+
+        for i in UUID:
+            os.system("findfs UUID=%s > device" % i[5:])
+
+        with open("device", "r") as f:
+            for line in f.readlines():
+                self.filesystem.append(line.split()[0])
+
+       # print(devicename1)
+       # print(self.filesystem)
         return devicename1
 
-    def list_encrypted_devices_del(self):
-        os.system("df -h > device")
-        with open("device", "r") as f:
-            device = []
-            device1 = []
-            for line in f.readlines()[1:]:
-                device.append(line.split()[5])
-                device1.append(line.split()[0])
-            for s in device:
-                if "/run/media" in s:
-                    filesystem2.append(device1[device.index(s)])
-                    devicename2.append(os.path.basename(s))
-        return devicename2
-
     def addKey(self):
-        self.widget2.close()
-        #if self.AcomboBox.currentIndex() == 0:
-        #    QMessageBox.information(self, 'Alert', "Please Select Drive", QMessageBox.Close)
-        #else:
+        """
+        The function to a add new backup key for already encrypted device.
+
+        :return: None
+        """
+        self.widget_t.close()
         if self.Atextbox1.text()!= self.Atextbox2.text():
             QMessageBox.warning(self, 'Warning', "Password doesn't match", QMessageBox.Ok)
             if (QMessageBox.Ok):
@@ -291,12 +309,18 @@ class Window(QWidget):
                 self.Atextbox2.setText("")
 
         else:
-           # dname = "/dev/"+names[labels.index(self.AcomboBox.currentText())]
+            device_list = self.listEncryptedDevices()
+            for i in device_list:
+                if str(self.AcomboBox.currentText())==i:
+                    dname = self.filesystem[device_list.index(i)]
+                    print(dname)
+
+
             try:
                 child = pexpect.spawn(
-                    'sudo cryptsetup luksAddKey %s' % filesystem1[devicename1.index(self.AcomboBox.currentText())])
+                    'sudo cryptsetup luksAddKey %s' % dname)
                 child.expect_exact('[sudo] password for %s:' % getpass.getuser())
-                child.sendline(self.password1.text())
+                child.sendline(self.password_t.text())
                 child.expect_exact('Enter any existing passphrase:')
                 child.sendline(self.Atextbox.text())
                 child.expect_exact('Enter new passphrase for key slot:')
@@ -310,13 +334,22 @@ class Window(QWidget):
 
 
     def delKey(self):
-        self.widget3.close()
-        #dname = "/dev/"+names[labels.index(self.DcomboBox.currentText())]
+        """
+        The function to delete an existing key.
+
+        :return: None
+        """
+        self.widget_t.close()
+        device_list = self.listEncryptedDevices()
+        for i in device_list:
+            if str(self.DcomboBox.currentText())==i:
+                dname = self.filesystem[device_list.index(i)]
+                print(dname)
         try:
             child = pexpect.spawn(
-                'sudo cryptsetup luksRemoveKey %s' % filesystem2[devicename2.index(self.DcomboBox.currentText())])
+                'sudo cryptsetup luksRemoveKey %s' % dname)
             child.expect_exact('[sudo] password for %s:' % getpass.getuser())
-            child.sendline(self.password2.text())
+            child.sendline(self.password_t.text())
             child.expect_exact('Enter passphrase to be deleted:')
             child.sendline(self.Dtextbox.text())
             child.expect(pexpect.EOF, timeout=None)
@@ -326,6 +359,9 @@ class Window(QWidget):
 
 
 def main():
+    """
+    udrivencrypt: GUI to encrypt USB drives.
+    """
     app = QApplication(sys.argv)
     window = Window()
     window.show()

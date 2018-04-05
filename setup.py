@@ -12,10 +12,10 @@ setup(name='udrivencrypt',
       version='1.0.0',
       description="GUI to encrypt USB drive using PyQt5",
       long_description=open("README.md").read(),
-      author='Gajanan More
-	      Akshata Jadhav
-	      Anuja Kulkarni
-	      Amruta Salunkhe',
+      author='Gajanan More, '
+             'Akshata Jadhav, '
+             'Anuja Kulkarni, '
+             'Amruta Salunkhe',
       author_email='anujakulkarni111@gmail.com',
       license='GNU General Public License V3.0',
       url='https://github.com/udrivencrypt/udrivencrypt',

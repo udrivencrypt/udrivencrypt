@@ -17,10 +17,9 @@ The methods and modules written to develop this GUI are as follows.
                 The execution starts from this method and the application is built.
                 This module has following methods:
                 -  \ **list\_device:** Lists all the connected USB drives (both encrypted and non-encrypted). It uses 'df -h' command to filter 
-                  connected USB drives by checking mount point and gets labels of each USB drive.
-                - The 3 checkboxes ‘Encrypt USB drive’, ‘Add keys’ and ‘Delete keys’ are handled using methods Entoggle, Atoggle and Dtoggle 
-                  respectively. When the user checks one of the checkbox, the groupbox associated with that checkbox gets set visible and other 
-                  two groupboxes remain disabled.
+                  connected USB drives by checking mount point and gets labels of each USB drive. The 3 checkboxes ‘Encrypt USB drive’, ‘Add keys
+                  and ‘Delete keys’ are handled using methods Entoggle, Atoggle and Dtoggle respectively. When the user checks one of the checkbox
+                  , the groupbox associated with that checkbox gets set visible and other two groupboxes remain disabled.
 
                 -  \ **check:** Checks which checkbox is checked andwhether any drive from corresponding drop-down menu is selected or  not.
 
@@ -33,8 +32,8 @@ The methods and modules written to develop this GUI are as follows.
 
                 -  \ **create\_luks\_partition:** Encrypts the device using cryptsetup commands.
 
-                -  \ **listEncryptedDevices:** Lists all encrypted devices. It uses 'lsblk' command to filter only encrypted devices by
-                  checking FSTYPE.
+                -  \ **listEncryptedDevices:** Lists all encrypted devices. It uses 'lsblk' command to filter only encrypted devices by checking
+                  FSTYPE.
 
                 -  \ **addKey:** Adds new backup key for already    encrypted device.
 

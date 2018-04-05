@@ -1,9 +1,9 @@
-User Guide
-==========
+Getting Started
+===============
 
 **1. \ Introduction**
-         USB drives have become inseparable part of our lives. Providing security to the data in them has become a topic of concern. LUKS is the
-specification that allows encryption of USB drives but the process is not easily understood by people less connected to shell commands and LUKS.
+         USB drives have become inseparable part of our lives. Providing security to the data in them has become a topic of concern. 
+         LUKS is the specification that allows encryption of USB drives but the process is not easily understood by people less connected to shellcommands and LUKS.
         udrivencrypt provides a GUI for performing encryption of USB drives where users will just have to click buttons and enter data as guided. This the main objective of udrivencrypt is to make encryption easy for not so technical people and prohibiting access to unauthorized people.
 
 **2. \ Features**
@@ -44,20 +44,22 @@ specification that allows encryption of USB drives but the process is not easily
 **3. \ Installation**
 
         a. Create virtual environment:
-                $python3 -m venv v1
+                
+                $ python3 -m venv v1  
            (Here v1 is virtual environment name)
                 
-                $source v1/bin/activate
+                $ source v1/bin/activate
            (To activate your virtual environment)
+
 
         b. Clone project from github:
 
-                $git clone `*https://github.com/udrivencrypt/udrivencrypt.git* <https://github.com/udrivencrypt/udrivencrypt.git>`__
+                $ git clone `*https://github.com/udrivencrypt/udrivencrypt.git* <https://github.com/udrivencrypt/udrivencrypt.git>`__
 
 
         c. Install the prerequisites to run the application:
 
-                $pip install -r requirement.txt
+                $ pip install -r requirement.txt
 
 
         d. Build the application:

@@ -16,7 +16,7 @@ def Delete(self):
     self.DcomboBox.setMinimumWidth(300)
     device_list = self.listEncryptedDevices()
     for ele in device_list:
-        self.DcomboBox.addItem(ele['label'])
+        self.DcomboBox.addItem(ele)
 
     label = QLabel()
     label.setText("Enter password to be deleted")

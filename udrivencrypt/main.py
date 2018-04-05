@@ -272,8 +272,7 @@ class Window(QWidget):
         It uses 'lsblk' command to filter only encrypted devices by checking FSTYPE.
 
         :return:
-            list: list of dictionaries which contain 'label' and 'name' of
-                    each encrypted device.
+            devicename1: list of labels for each encrypted device
         """
         os.system("lsblk --raw | grep 'crypt'> device ")
         with open("device", "r") as f:

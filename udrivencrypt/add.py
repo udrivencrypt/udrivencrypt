@@ -17,7 +17,7 @@ def Add(self):
     self.AcomboBox.setMinimumWidth(300)
     device_list = self.listEncryptedDevices()
     for ele in device_list:
-        self.AcomboBox.addItem(ele['label'])
+        self.AcomboBox.addItem(ele)
 
     label = QLabel()
     label.setText("Enter any existing password")

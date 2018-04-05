@@ -275,22 +275,26 @@ class Window(QWidget):
             list: list of dictionaries which contain 'label' and 'name' of
                     each encrypted device.
         """
-        list = []
-        os.system("lsblk -fs -l -n > dev_info")
-        with open("dev_info") as f:
-            for line in f:
-                dev_list = re.split("\s+",line)
-                if dev_list[1] == "crypto_LUKS":
-                    id = dev_list[3]
-                    for line1 in f:
-                        dev_list1 = re.split("\s+",line1)
-                        if "luks-"+id in dev_list1[0]:
-                            list.append({'label':dev_list1[2],'name':dev_list[0]})
+        os.system("lsblk --raw | grep 'crypt'> device ")
+        with open("device", "r") as f:
+            UUID = []
+            devicename1 = []
+            self.filesystem = []
 
+            for line in f.readlines():
+                devicename1.append(os.path.basename(line.split()[6]))
+                UUID.append(line.split()[0])
 
+        for i in UUID:
+            os.system("findfs UUID=%s > device" % i[5:])
 
+        with open("device", "r") as f:
+            for line in f.readlines():
+                self.filesystem.append(line.split()[0])
 
-        return list
+       # print(devicename1)
+       # print(self.filesystem)
+        return devicename1
 
     def addKey(self):
         """
@@ -307,9 +311,9 @@ class Window(QWidget):
 
         else:
             device_list = self.listEncryptedDevices()
-            for ele in device_list:
-                if ele['label'] == str(self.AcomboBox.currentText()):
-                    dname = "/dev/"+ele['name']
+            for i in device_list:
+                if str(self.AcomboBox.currentText())==i:
+                    dname = self.filesystem[device_list.index(i)]
                     print(dname)
 
 
@@ -338,9 +342,9 @@ class Window(QWidget):
         """
         self.widget_t.close()
         device_list = self.listEncryptedDevices()
-        for ele in device_list:
-            if ele['label'] == str(self.DcomboBox.currentText()):
-                dname = "/dev/" + ele['name']
+        for i in device_list:
+            if str(self.DcomboBox.currentText())==i:
+                dname = self.filesystem[device_list.index(i)]
                 print(dname)
         try:
             child = pexpect.spawn(

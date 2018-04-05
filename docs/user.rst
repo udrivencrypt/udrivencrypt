@@ -43,25 +43,32 @@ specification that allows encryption of USB drives but the process is not easily
 
 **3. \ Installation**
 
-        a. Clone project from github:
+        a. Create virtual environment:
+                $python3 -m venv v1
+           (Here v1 is virtual environment name)
+                
+                $source v1/bin/activate
+           (To activate your virtual environment)
+
+        b. Clone project from github:
 
                 $git clone `*https://github.com/udrivencrypt/udrivencrypt.git* <https://github.com/udrivencrypt/udrivencrypt.git>`__
 
 
-        b. Install the prerequisites to run the application:
+        c. Install the prerequisites to run the application:
 
                 $pip install -r requirement.txt
 
 
-        c. Build the application:
+        d. Build the application:
 
                 $ python setup.py install
 
                 $ python setup.py build
 
 
-        d. Open Terminal and enter the command ‘udrivencrypt’.
+        e. Open Terminal and enter the command ‘udrivencrypt’.
 
 
-        e. Encrypt your USB and make your data safe.
+        f. Encrypt your USB and make your data safe.
 

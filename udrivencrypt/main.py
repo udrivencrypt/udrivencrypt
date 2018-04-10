@@ -314,23 +314,41 @@ class Window(QWidget):
                 if str(self.AcomboBox.currentText())==i:
                     dname = self.filesystem[device_list.index(i)]
                     print(dname)
-
-
             try:
                 child = pexpect.spawn(
-                    'sudo cryptsetup luksAddKey %s' % dname)
+                'sudo cryptsetup luksAddKey %s' % dname)
                 child.expect_exact('[sudo] password for %s:' % getpass.getuser())
                 child.sendline(self.password_t.text())
-                child.expect_exact('Enter any existing passphrase:')
-                child.sendline(self.Atextbox.text())
-                child.expect_exact('Enter new passphrase for key slot:')
-                child.sendline(self.Atextbox1.text())
+                try:
+                    index = child.expect_exact(['Enter any existing passphrase:','Sorry, try again.'])
+                    if index == 0:
+                        child.sendline(self.Atextbox.text())
+                    elif index == 1:
+                        raise Exception
+                except:
+                    QMessageBox.warning(self, 'Warning', "Incorrect user password", QMessageBox.Ok)
+                try:
+                    index1 = child.expect_exact(['Enter new passphrase for key slot:','No key available with this passphrase.'])
+                    if index1 == 0:
+                        child.sendline(self.Atextbox1.text())
+                    elif index1 == 1:
+                        raise Exception
+                except:
+                    QMessageBox.warning(self, 'Message', "No key available with this passphrase.", QMessageBox.Ok)
                 child.expect_exact('Verify passphrase:')
                 child.sendline(self.Atextbox2.text())
-                child.expect(pexpect.EOF, timeout=None)
-                QMessageBox.warning(self, 'Message', "Key successfully added.", QMessageBox.Ok)
+                try:
+                    index2 = child.expect_exact(['All key slots full.', pexpect.EOF])
+                    if index2 == 0:
+                        raise Exception
+                    else:
+                        QMessageBox.warning(self, 'Message', "Key successfully added.", QMessageBox.Ok)
+                except:
+                    QMessageBox.warning(self, 'Message', "All key slots full.", QMessageBox.Ok)
+                child.expect(pexpect.EOF,timeout=None)
             except:
-                QMessageBox.warning(self, 'Warning', "Try Again", QMessageBox.Ok)
+                QMessageBox.warning(self, 'Warning', "Try again", QMessageBox.Ok)
+
 
 
     def delKey(self):

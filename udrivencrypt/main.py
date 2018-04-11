@@ -323,29 +323,30 @@ class Window(QWidget):
                     index = child.expect_exact(['Enter any existing passphrase:','Sorry, try again.'])
                     if index == 0:
                         child.sendline(self.Atextbox.text())
+                        try:
+                            index1 = child.expect_exact(
+                                ['Enter new passphrase for key slot:', 'No key available with this passphrase.'])
+                            if index1 == 0:
+                                child.sendline(self.Atextbox1.text())
+                                child.expect_exact('Verify passphrase:')
+                                child.sendline(self.Atextbox2.text())
+                                #child.expect(pexpect.EOF, timeout=None)
+                                try:
+                                    index2 = child.expect_exact([pexpect.EOF,'All key slots full.'])
+                                    if index2 == 0:
+                                        QMessageBox.warning(self, 'Message', "Key successfully added.", QMessageBox.Ok)
+                                    elif index2 == 1:
+                                        QMessageBox.warning(self, 'Message', "All key slots full.", QMessageBox.Ok)
+                                except:
+                                    QMessageBox.warning(self, 'Warning', "Try again.", QMessageBox.Ok)
+                            elif index1 == 1:
+                                QMessageBox.warning(self, 'Message', "No key available with this passphrase.", QMessageBox.Ok)
+                        except:
+                            QMessageBox.warning(self, 'Warning', "Try again", QMessageBox.Ok)
                     elif index == 1:
                         raise Exception
                 except:
                     QMessageBox.warning(self, 'Warning', "Incorrect user password", QMessageBox.Ok)
-                try:
-                    index1 = child.expect_exact(['Enter new passphrase for key slot:','No key available with this passphrase.'])
-                    if index1 == 0:
-                        child.sendline(self.Atextbox1.text())
-                    elif index1 == 1:
-                        raise Exception
-                except:
-                    QMessageBox.warning(self, 'Message', "No key available with this passphrase.", QMessageBox.Ok)
-                child.expect_exact('Verify passphrase:')
-                child.sendline(self.Atextbox2.text())
-                try:
-                    index2 = child.expect_exact(['All key slots full.', pexpect.EOF])
-                    if index2 == 0:
-                        raise Exception
-                    else:
-                        QMessageBox.warning(self, 'Message', "Key successfully added.", QMessageBox.Ok)
-                except:
-                    QMessageBox.warning(self, 'Message', "All key slots full.", QMessageBox.Ok)
-                child.expect(pexpect.EOF,timeout=None)
             except:
                 QMessageBox.warning(self, 'Warning', "Try again", QMessageBox.Ok)
 

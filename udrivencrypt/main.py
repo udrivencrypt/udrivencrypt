@@ -349,8 +349,6 @@ class Window(QWidget):
             except:
                 QMessageBox.warning(self, 'Warning', "Try again", QMessageBox.Ok)
 
-
-
     def delKey(self):
         """
         The function to delete an existing key.
@@ -368,13 +366,34 @@ class Window(QWidget):
                 'sudo cryptsetup luksRemoveKey %s' % dname)
             child.expect_exact('[sudo] password for %s:' % getpass.getuser())
             child.sendline(self.password_t.text())
-            child.expect_exact('Enter passphrase to be deleted:')
-            child.sendline(self.Dtextbox.text())
-            child.expect(pexpect.EOF, timeout=None)
-            QMessageBox.warning(self, 'Message', "Key deleted successfully.", QMessageBox.Ok)
+            try:
+                index = child.expect_exact(['Enter passphrase to be deleted:','Sorry, try again.'])
+                if index == 0:
+                    child.sendline(self.Dtextbox.text())
+                    try:
+                        index1 = child.expect_exact([pexpect.EOF, 'No key available with this passphrase.',
+                                                     '\r\nWARNING!\r\n========\r\nThis is the last keyslot. Device will become unusable after purging this key.\r\n\r\nAre you sure? (Type uppercase yes):'])
+                        if index1 == 0:
+                            QMessageBox.warning(self, 'Message', "Key deleted successfully.", QMessageBox.Ok)
+                        elif index1 == 1:
+                            QMessageBox.warning(self, 'Message', "No key available with this passphrase.", QMessageBox.Ok)
+                        elif index1 == 2:
+                            choice = QMessageBox.warning(self, 'Warning',
+                                                         "This is the last keyslot. Device will become unusable after purging this key.",
+                                                         QMessageBox.Ok | QMessageBox.Cancel,QMessageBox.Cancel)
+                            if choice == QMessageBox.Ok:
+                                child.sendline("YES\n")
+                                child.expect_exact(pexpect.EOF)
+                                QMessageBox.warning(self, 'Message', "Key deleted successfully.", QMessageBox.Ok)
+                    except:
+                        QMessageBox.warning(self, 'Message', "Try again.", QMessageBox.Ok)
+
+                elif index ==1:
+                    raise Exception
+            except:
+                QMessageBox.warning(self, 'Message', "Incorrect user password.", QMessageBox.Ok)
         except:
             QMessageBox.warning(self, 'Warning', "Try again", QMessageBox.Ok)
-
 
 def main():
     """

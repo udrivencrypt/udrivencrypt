@@ -210,7 +210,7 @@ class Window(QWidget):
             label=QLabel("Enter new name for drive")
             self.map=QLineEdit()
             btnmapcontinue=QPushButton("Continue")
-            self.hboxLayoutmap = QHBoxLayout(self)
+            self.hboxLayoutmap = QVBoxLayout(self)
             self.hboxLayoutmap.addWidget(label)
             self.hboxLayoutmap.addWidget(self.map)
             self.hboxLayoutmap.addWidget(btnmapcontinue)
@@ -258,11 +258,9 @@ class Window(QWidget):
             y=os.system("echo %s | sudo -S %s"%(self.password_t.text(),command5))
             if y==0:
                 choice = QMessageBox.information(self, 'Message',
-                                                 "Drive is encrypted.Click 'No' to end .Click 'Yes'to add new key",
-                                                 QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
+                                                 "Eject the drive and reconnect it. Now restart application for further use.",
+                                                 QMessageBox.Yes)
                 if choice == QMessageBox.Yes:
-                    self.Acheck.setChecked(True)
-                else:
                     sys.exit()
 
 

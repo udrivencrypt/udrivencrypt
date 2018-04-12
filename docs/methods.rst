@@ -1,52 +1,68 @@
 Methods and Modules
 ===================
 
-An easy to use GUI that allows users to encrypt their USB drives in a simple way. Users can also add and delete keys to their already 
-encrypted drives through this application.
-Get this project here: `*https://github.com/udrivencrypt/udrivencrypt* <https://github.com/udrivencrypt/udrivencrypt>`__
+An easy to use GUI that allows users to encrypt their USB drives in a simple way. Users can also add and delete keys to their already encrypted drives through this application.
+Get this project `here <https://github.com/udrivencrypt/udrivencrypt>`_.
 The methods and modules written to develop this GUI are as follows.
 
-**1. \ Methods:**
 
-        **1. \ \_\_init\_\_.py:**
-                This method is used to call the main method and sets layout for main application window.
+Methods
+-------
 
-**2. \ Modules:**
+       **1 \ __init__.py:**
+          This method is used to call the main method and sets layout for application window.
 
-        **1. \ Main.py:**
-                The execution starts from this method and the application is built.
-                This module has following methods:
-                -  \ **list\_device:** Lists all the connected USB drives (both encrypted and non-encrypted). It uses 'df -h' command to filter 
-                  connected USB drives by checking mount point and gets labels of each USB drive. The 3 checkboxes ‘Encrypt USB drive’, ‘Add keys
-                  and ‘Delete keys’ are handled using methods Entoggle, Atoggle and Dtoggle respectively. When the user checks one of the checkbox
-                  , the groupbox associated with that checkbox gets set visible and other two groupboxes remain disabled.
 
-                -  \ **check:** Checks which checkbox is checked andwhether any drive from corresponding drop-down menu is selected or  not.
+Modules
+-------
 
-                -  \ **password\_popup:** Creates a popup window, where user is asked to enter superuser password. This is called when the user 
-                  clicks continue button.
+        **2 \ main.py:**
+          The execution starts from this method and the application is built. This module has following methods:
 
-                -  \ **format:** Unmounts the selected device and erases all signatures.
+                - \ **list_device:** 
+                  List all the connected USB drives (both encrypted and nonencrypted). It uses 'df -h' command to filter connected USB drives by checking mount point and gets labels of each USB drive. 
+                  The 3 checkboxes 'Encrypt USB drive', 'Add Keys', 'Delete Keys' are handled using methods Entoggle, Atoggle and Dtoggle respectively. When the user checks one of the checkbox, the gorupbox associated with that checkbox gets set visible and other two groupboxes remain disabled.
+                
+                - \ **check:** 
+                Checks which checkbox is checked and whether any drive from corresponding drop-down menu is selected or not.
 
-                -  \ **Finish:** Creates a popup window, where user is asked to enter a label for selected device.
+                - \ **password_popup:** 
+                Creates a popup window, where user is asked to enter superuser password. This is called when the user clicks continue button.
 
-                -  \ **create\_luks\_partition:** Encrypts the device using cryptsetup commands.
+                - \ **format:** 
+                Unmounts the selected device and erases all signatures.
 
-                -  \ **listEncryptedDevices:** Lists all encrypted devices. It uses 'lsblk' command to filter only encrypted devices by checking
-                  FSTYPE.
+                - \ **finish:** 
+                Creates a popup window, where user is asked to enter a label for selected device.
 
-                -  \ **addKey:** Adds new backup key for already    encrypted device.
+                - \ **create_luks_partition:** 
+                Encrypts the device using cryptsetup commands.
 
-                -  \ **delKey:** Deletes entered key.
+                - \ **listEncryptedDevices:** 
+                Lists all encrypted devices. It uses 'lsblk' command to filter only encrypted devices by checking FSTYPE.
 
-        **2. encrypt.py:**
+                - \ **addKey:** 
+                Adds new backup key for already encrypted device.
 
-                - \ **Encrypt:** Enables groupbox for encryption of drives.
+                - \ **delKey:** 
+                Deletes entered key.
 
-        **3. add.py:**
 
-                - \  **Add:** Enables groupbox for adding new key.
+        **2 \ encrypt.py:**
 
-        **4. delete.py:**
+                - \ **Encrypt:** 
+                Enables groupbox for encryption of devices.
 
-                - \  **Delete:** Enables groupbox for deleting an existing key.
+
+        **3 \ add.py:**
+
+                - \ **Add:** 
+                Enables groupbox for adding new key.
+
+
+        **4 \ delete.py:**
+                
+                - \ **Delete:** 
+                Enables groupbox for deleting an existing key.
+
+

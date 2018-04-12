@@ -9,7 +9,7 @@ from setuptools import setup,find_packages
 
 setup(name='udrivencrypt',
       packages=find_packages(),
-      version='1.0.0',
+      version='1.0.1',
       description="GUI to encrypt USB drive using PyQt5",
       long_description=open("README.md").read(),
       author='Gajanan More, '

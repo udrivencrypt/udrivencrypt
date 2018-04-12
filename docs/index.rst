@@ -6,7 +6,7 @@
 udrivencrypt
 ============
 
-GUI to encrypt USB drives using LUKS.
+GUI to encrypt USB drives using LUKS version v1.0.1.
 
 
 .. toctree::

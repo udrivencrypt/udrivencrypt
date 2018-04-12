@@ -1,76 +1,86 @@
 Getting Started
 ===============
 
-**1. \ Introduction**
-         USB drives have become inseparable part of our lives. Providing security to the data in them has become a topic of concern. 
-         LUKS is the specification that allows encryption of USB drives but the process is not easily understood by people less connected to shellcommands and LUKS.
-        udrivencrypt provides a GUI for performing encryption of USB drives where users will just have to click buttons and enter data as guided. This the main objective of udrivencrypt is to make encryption easy for not so technical people and prohibiting access to unauthorized people.
-
-**2. \ Features**
-
-        **a. \ Encrypt USB drive**
-
-                i.   udrivencrypt provides list of connected USB drives
-
-                ii.  udrivencrypt formats the selected USB drive
-
-                iii. udrivencrypt creates LUKS partition
-
-                iv.  udrivencrypt custom passphrase
-
-        **b. \ Add new key for encrypted USB drive**
-
-                i.   udrivencrypt asks for existing passphrase
-
-                ii.  udrivencrypt authenticates user
-
-                iii. udrivencrypt adds custom passphrase
-
-                iv.  udrivencrypt displays warning if 8 passphrases already exist.
-
-        **c. \ Delete key from encrypted USB drive**
-
-                i.   udrivencrypt asks for existing passphrase
-
-                ii.  udrivencrypt authenticates user
-
-                iii. udrivencrypt asks for passphrase to be deleted
-
-                iv.  udrivencrypt deletes the desired passphrase
-
-                v.   udrivencrypt displays warning if last passphrase is being deleted. (If last passphrase gets deleted, user will lose the 
-                     access to data and will have to format the drive unwantedly.)
-
-**3. \ Installation**
-
-        a. Create virtual environment:
-                
-                $ python3 -m venv v1  
-           (Here v1 is virtual environment name)
-                
-                $ source v1/bin/activate
-           (To activate your virtual environment)
+Introduction
+------------
+Providing security to the data in USB drives has become a topic of concern. udrivencrypt provides a GUI for performing encryption of USB drives where users will just have to click buttons and enter data as guided. 
+udrivencrypt allows users to encrypt USB drives, add passwords to already encrypted USB drives and delete passwords from already encrypted USB drives. It uses `LUKS <https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/5/html/installation_guide/ch29s02>`_ commands at background and the GUI is built using PyQt5.
 
 
-        b. Clone project from github:
+Features
+--------
 
-                $ git clone `*https://github.com/udrivencrypt/udrivencrypt.git* <https://github.com/udrivencrypt/udrivencrypt.git>`__
+**Encrypt USB Drive**
 
 
-        c. Install the prerequisites to run the application:
+  * udrivencrypt provides list of only unencrypted USB drives.
 
+  * udrivencrypt formats the selected USB drive.
+
+  * udrivencrypt creates LUKS partition.
+
+  * udrivencrypt allows user to add custom passphrase.
+
+
+
+**Add new key for encrypted USB drive**
+
+
+  * udrivencrypt provides list of only encrypted USB drives.
+
+  * udrivencrypt asks for existing passphrase.
+
+  * udrivencrypt authenticates user.
+
+  * udrivencrypt allows user to add new backup keys.
+
+  * udrivencrypt displays warning if all eight key slots are full.
+
+
+
+**Delete key from encrypted USB drive**
+
+
+  * udrivencrypt provides list of only encrypted USB drives.
+
+  * udrivencrypt asks for existing passphrase.
+
+  * udrivencrypt authenticates user.
+
+  * udrivencrypt asks for passphrase to be deleted.
+
+  * udrivencrypt deletes the desired passphrase.
+
+  * udrivencrypt displays warning if past is being deleted. (If last passphrase gets deleted, user will lose the access to data and will have to format the drive unwantedly.)
+
+
+Installation
+------------
+
+  * Create virtual environment:
+
+                $ python3 -m venv *virtual_environment_name*
+
+                $ source *virtual_environment_name*/bin/activate
+  
+  * Clone project from github:
+
+                $ git clone https://github.com/udrivencrypt/udrivencrypt.git
+
+
+  * Install the prerequistics to run the application:
+        
                 $ pip install -r requirement.txt
 
 
-        d. Build the application:
+  * Build the application:
 
                 $ python setup.py install
 
                 $ python setup.py build
 
+  * Open terminal and enter the command 'udrivencrypt'.
 
-        e. Open Terminal and enter the command ‘udrivencrypt’.
 
-
-        f. Encrypt your USB and make your data safe.
+  * Encrypt your USB and make your data safe.
 

@@ -1,20 +1,38 @@
 Workflows
 =========
 
-**1. Workflow to encrypt USB Drive**
-        When udrivencrypt is launched, the main window will have three checkboxes - ‘Encrypt USB drive’, ‘Add keys’ and ‘Delete keys’. The 
-        checkbox Encrypt USB drive is selected by default and thus it’s options are available. To encrypt USB drive, first select that particular
-        USB drive from the drop down list displaying all the connected USB drives (both encrypted and unencrypted). Then click on the ‘Format’ 
-        button.
-        If the USB drive is already encrypted, clicking on ‘Format’ will pop up a message saying “To format disk you need to enter user password.
-        Do you want to continue?”. Click ‘yes’ to continue. Then enter a passwordof your choice and confirm it by entering again in the other 
-        texbox and continue. Now you’ll be prompted to enter the mapper name. Your USB drivewill be renamed to this name.
 
-**2. Workflow to add new key to encrypted devices**
-        Now if you wish to add new key to the USB drive, check the checkbox ‘Add keys’. Maximum of 8 keys can be added to one USB drive. For this
-        you’ll have to first enter any existing password of the USB drive. Now enter new password and verify by entering it again. Click on 
-        ‘Finish’ to complete this operation.
+Encrypt USB Drive
+-----------------
 
-**3. Workflow to delete an existing key from encrypted devices**
-        To delete one of the existing password, check the checkbox ‘Delete keys’. Enter password that you want to delete. Click on ‘Finish’ to 
-        complete this operation.
+* Out of three checkboxes on the main window, check on 'Encrypt USB Drive'. It is already set as checked by default.
+* Select specific USB drive to be encryped from the drop down list provided, that displays all the connected USB drives.
+* Click on 'Format' button.
+* You'll see a pop up message 'To format disk you need to enter user password. Do you want to continue?'. Click 'yes' to continue.
+* Enter user password.
+* Now you can set a password of your choice by entering it in the text box labelled 'Enter password'. Confirm it by entering it again.
+* Click on 'Finish' button.
+* Now you'll be prompted to enter the mapper name. Your USB drive will be renamed to the name you.  
+
+-------------------------------------------------------------------------
+
+Add new key
+-----------
+
+* Check the checkbox 'Add Keys'.
+* Select specific USB drive from the drop down list provided, that displays all the connected USB drives.
+* Enter any existing password of the USB drive.
+* Now enter new password to be added to the drive and verify by enteringit again.
+* Click on 'Finish' to complete this operation.
+
+-------------------------------------------------------------------------
+
+Delete an existing key
+----------------------
+
+* Check the checkbox 'Delete Keys'.
+* Select specific USB drive from the drop down list provided, that displays all the connected USB drives.
+* Enter password that you want to delete.
+* Click on 'Finish' to complete this operation.
+
+-------------------------------------------------------------------------

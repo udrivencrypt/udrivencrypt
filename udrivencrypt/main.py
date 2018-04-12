@@ -210,7 +210,7 @@ class Window(QWidget):
             label=QLabel("Enter new name for drive")
             self.map=QLineEdit()
             btnmapcontinue=QPushButton("Continue")
-            self.hboxLayoutmap = QHBoxLayout(self)
+            self.hboxLayoutmap = QVBoxLayout(self)
             self.hboxLayoutmap.addWidget(label)
             self.hboxLayoutmap.addWidget(self.map)
             self.hboxLayoutmap.addWidget(btnmapcontinue)
@@ -258,11 +258,9 @@ class Window(QWidget):
             y=os.system("echo %s | sudo -S %s"%(self.password_t.text(),command5))
             if y==0:
                 choice = QMessageBox.information(self, 'Message',
-                                                 "Drive is encrypted.Click 'No' to end .Click 'Yes'to add new key",
-                                                 QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
+                                                 "Eject the drive and reconnect it. Now restart application for further use.",
+                                                 QMessageBox.Yes)
                 if choice == QMessageBox.Yes:
-                    self.Acheck.setChecked(True)
-                else:
                     sys.exit()
 
 
@@ -314,24 +312,41 @@ class Window(QWidget):
                 if str(self.AcomboBox.currentText())==i:
                     dname = self.filesystem[device_list.index(i)]
                     print(dname)
-
-
             try:
                 child = pexpect.spawn(
-                    'sudo cryptsetup luksAddKey %s' % dname)
+                'sudo cryptsetup luksAddKey %s' % dname)
                 child.expect_exact('[sudo] password for %s:' % getpass.getuser())
                 child.sendline(self.password_t.text())
-                child.expect_exact('Enter any existing passphrase:')
-                child.sendline(self.Atextbox.text())
-                child.expect_exact('Enter new passphrase for key slot:')
-                child.sendline(self.Atextbox1.text())
-                child.expect_exact('Verify passphrase:')
-                child.sendline(self.Atextbox2.text())
-                child.expect(pexpect.EOF, timeout=None)
-                QMessageBox.warning(self, 'Message', "Key successfully added.", QMessageBox.Ok)
+                try:
+                    index = child.expect_exact(['Enter any existing passphrase:','Sorry, try again.'])
+                    if index == 0:
+                        child.sendline(self.Atextbox.text())
+                        try:
+                            index1 = child.expect_exact(
+                                ['Enter new passphrase for key slot:', 'No key available with this passphrase.'])
+                            if index1 == 0:
+                                child.sendline(self.Atextbox1.text())
+                                child.expect_exact('Verify passphrase:')
+                                child.sendline(self.Atextbox2.text())
+                                #child.expect(pexpect.EOF, timeout=None)
+                                try:
+                                    index2 = child.expect_exact([pexpect.EOF,'All key slots full.'])
+                                    if index2 == 0:
+                                        QMessageBox.warning(self, 'Message', "Key successfully added.", QMessageBox.Ok)
+                                    elif index2 == 1:
+                                        QMessageBox.warning(self, 'Message', "All key slots full.", QMessageBox.Ok)
+                                except:
+                                    QMessageBox.warning(self, 'Warning', "Try again.", QMessageBox.Ok)
+                            elif index1 == 1:
+                                QMessageBox.warning(self, 'Message', "No key available with this passphrase.", QMessageBox.Ok)
+                        except:
+                            QMessageBox.warning(self, 'Warning', "Try again", QMessageBox.Ok)
+                    elif index == 1:
+                        raise Exception
+                except:
+                    QMessageBox.warning(self, 'Warning', "Incorrect user password", QMessageBox.Ok)
             except:
-                QMessageBox.warning(self, 'Warning', "Try Again", QMessageBox.Ok)
-
+                QMessageBox.warning(self, 'Warning', "Try again", QMessageBox.Ok)
 
     def delKey(self):
         """
@@ -350,13 +365,34 @@ class Window(QWidget):
                 'sudo cryptsetup luksRemoveKey %s' % dname)
             child.expect_exact('[sudo] password for %s:' % getpass.getuser())
             child.sendline(self.password_t.text())
-            child.expect_exact('Enter passphrase to be deleted:')
-            child.sendline(self.Dtextbox.text())
-            child.expect(pexpect.EOF, timeout=None)
-            QMessageBox.warning(self, 'Message', "Key deleted successfully.", QMessageBox.Ok)
+            try:
+                index = child.expect_exact(['Enter passphrase to be deleted:','Sorry, try again.'])
+                if index == 0:
+                    child.sendline(self.Dtextbox.text())
+                    try:
+                        index1 = child.expect_exact([pexpect.EOF, 'No key available with this passphrase.',
+                                                     '\r\nWARNING!\r\n========\r\nThis is the last keyslot. Device will become unusable after purging this key.\r\n\r\nAre you sure? (Type uppercase yes):'])
+                        if index1 == 0:
+                            QMessageBox.warning(self, 'Message', "Key deleted successfully.", QMessageBox.Ok)
+                        elif index1 == 1:
+                            QMessageBox.warning(self, 'Message', "No key available with this passphrase.", QMessageBox.Ok)
+                        elif index1 == 2:
+                            choice = QMessageBox.warning(self, 'Warning',
+                                                         "This is the last keyslot. Device will become unusable after purging this key.",
+                                                         QMessageBox.Ok | QMessageBox.Cancel,QMessageBox.Cancel)
+                            if choice == QMessageBox.Ok:
+                                child.sendline("YES\n")
+                                child.expect_exact(pexpect.EOF)
+                                QMessageBox.warning(self, 'Message', "Key deleted successfully.", QMessageBox.Ok)
+                    except:
+                        QMessageBox.warning(self, 'Message', "Try again.", QMessageBox.Ok)
+
+                elif index ==1:
+                    raise Exception
+            except:
+                QMessageBox.warning(self, 'Message', "Incorrect user password.", QMessageBox.Ok)
         except:
             QMessageBox.warning(self, 'Warning', "Try again", QMessageBox.Ok)
-
 
 def main():
     """
